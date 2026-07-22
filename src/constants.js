@@ -4,30 +4,30 @@ export function formatDate(ts) { return new Date(ts).toLocaleDateString("de-DE",
 export const REACTIONS = ["✨","💀","😂","❤️","🎲","😱"];
 export const DEFAULT_PIN = "1234";
 export const QUEST_STATUSES = [
-  { id: "offen",      label: "Offen",       color: "#c094c8" },
-  { id: "aktiv",      label: "Aktiv",       color: "#94a8d8" },
-  { id: "gelöst",     label: "Gelöst",      color: "#94c8a8" },
-  { id: "gescheitert",label: "Gescheitert", color: "#d8a0a0" },
+  { id: "offen",      label: "Offen",       color: "#c99a2e" },
+  { id: "aktiv",      label: "Aktiv",       color: "#86bfa0" },
+  { id: "gelöst",     label: "Gelöst",      color: "#6fae86" },
+  { id: "gescheitert",label: "Gescheitert", color: "#d89a8e" },
 ];
 export const NPC_STATUSES = [
-  { id: "lebendig", label: "Lebendig", color: "#94c8a8" },
-  { id: "tot",      label: "Tot",      color: "#d8a0a0" },
-  { id: "vermisst", label: "Vermisst", color: "#e8c878" },
-  { id: "unbekannt",label: "Unbekannt",color: "#c0b8c8" },
+  { id: "lebendig", label: "Lebendig", color: "#6fae86" },
+  { id: "tot",      label: "Tot",      color: "#d89a8e" },
+  { id: "vermisst", label: "Vermisst", color: "#e3c46a" },
+  { id: "unbekannt",label: "Unbekannt",color: "#c2b896" },
 ];
 
 export const PAKT_TYPES = [
-  { id: "deal",         label: "Pakt/Deal",    color: "#b078d0", icon: "🤝" },
-  { id: "versprechen",  label: "Versprechen",  color: "#94a8d8", icon: "🕊" },
-  { id: "schuld",       label: "Schuld",       color: "#e8c878", icon: "⚖" },
-  { id: "prophezeiung", label: "Prophezeiung", color: "#c094c8", icon: "🔮" },
-  { id: "fluch",        label: "Fluch",        color: "#d8a0a0", icon: "🥀" },
+  { id: "deal",         label: "Pakt/Deal",    color: "#d4a838", icon: "🤝" },
+  { id: "versprechen",  label: "Versprechen",  color: "#86bfa0", icon: "🕊" },
+  { id: "schuld",       label: "Schuld",       color: "#e3c46a", icon: "⚖" },
+  { id: "prophezeiung", label: "Prophezeiung", color: "#c99a2e", icon: "🔮" },
+  { id: "fluch",        label: "Fluch",        color: "#d89a8e", icon: "🥀" },
 ];
 export const PAKT_STATUSES = [
-  { id: "offen",     label: "Offen",     color: "#c094c8" },
-  { id: "eingeloest",label: "Eingelöst", color: "#94c8a8" },
-  { id: "gebrochen", label: "Gebrochen", color: "#d8a0a0" },
-  { id: "verfallen", label: "Verfallen", color: "#c0b8c8" },
+  { id: "offen",     label: "Offen",     color: "#c99a2e" },
+  { id: "eingeloest",label: "Eingelöst", color: "#6fae86" },
+  { id: "gebrochen", label: "Gebrochen", color: "#d89a8e" },
+  { id: "verfallen", label: "Verfallen", color: "#c2b896" },
 ];
 
 export const NPC_LOCATIONS = [
@@ -81,8 +81,8 @@ export function sortNpcs(npcs, sortBy) {
   }
 }
 
-export function qColor(id) { return QUEST_STATUSES.find(s => s.id === id)?.color || "#c0b8c8"; }
-export function npcColor(id) { return NPC_STATUSES.find(s => s.id === id)?.color || "#c0b8c8"; }
+export function qColor(id) { return QUEST_STATUSES.find(s => s.id === id)?.color || "#c2b896"; }
+export function npcColor(id) { return NPC_STATUSES.find(s => s.id === id)?.color || "#c2b896"; }
 export function paktType(id) { return PAKT_TYPES.find(t => t.id === id) || PAKT_TYPES[0]; }
 export function paktStatus(id) { return PAKT_STATUSES.find(s => s.id === id) || PAKT_STATUSES[0]; }
 export function sortPakte(arr) {
@@ -95,10 +95,10 @@ export function sortPakte(arr) {
 }
 
 export const THEORY_CATEGORIES = [
-  { id: "plot",    label: "Plot-Theorie",   icon: "🔮", color: "#b078d0" },
-  { id: "npc",     label: "NPC-Theorie",    icon: "👤", color: "#94a8d8" },
-  { id: "ort",     label: "Ort / Geheimnis",icon: "🗝",  color: "#e8c878" },
-  { id: "wild",    label: "Wildes Gerücht", icon: "🌪", color: "#d8a0a0" },
+  { id: "plot",    label: "Plot-Theorie",   icon: "🔮", color: "#d4a838" },
+  { id: "npc",     label: "NPC-Theorie",    icon: "👤", color: "#86bfa0" },
+  { id: "ort",     label: "Ort / Geheimnis",icon: "🗝",  color: "#e3c46a" },
+  { id: "wild",    label: "Wildes Gerücht", icon: "🌪", color: "#d89a8e" },
 ];
 export const THEORY_REACTS = [
   { emoji: "👍", label: "Glaub ich auch" },
@@ -116,9 +116,9 @@ export const FUND_TYPES = [
 ];
 
 export const GM_CATEGORIES = [
-  { id: "plan",    label: "Planung",   color: "#94a8d8", icon: "📋" },
-  { id: "secret",  label: "Geheimnis", color: "#c094c8", icon: "🔐" },
-  { id: "npc",     label: "NPC-Info",  color: "#94c8a8", icon: "👤" },
-  { id: "world",   label: "Welt",      color: "#e8c878", icon: "🌍" },
-  { id: "session", label: "Session",   color: "#d8a0a0", icon: "🎲" },
+  { id: "plan",    label: "Planung",   color: "#86bfa0", icon: "📋" },
+  { id: "secret",  label: "Geheimnis", color: "#c99a2e", icon: "🔐" },
+  { id: "npc",     label: "NPC-Info",  color: "#6fae86", icon: "👤" },
+  { id: "world",   label: "Welt",      color: "#e3c46a", icon: "🌍" },
+  { id: "session", label: "Session",   color: "#d89a8e", icon: "🎲" },
 ];

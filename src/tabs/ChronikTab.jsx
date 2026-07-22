@@ -50,24 +50,24 @@ export default function ChronikTab({ gmMode, recaps, ur, reactions, react }) {
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
-  body { margin: 0; background: linear-gradient(160deg, #f3eaf8 0%, #e8d8f2 35%, #dde2f0 100%); color: #2a1838; font-family: 'IM Fell English', Georgia, serif; }
+  body { margin: 0; background: linear-gradient(160deg, #f2e7cf 0%, #ecdcbf 35%, #e6dcc2 100%); color: #241b12; font-family: 'IM Fell English', Georgia, serif; }
   .wrap { max-width: 680px; margin: 0 auto; padding: 2.5rem 1.2rem 4rem; }
   header { text-align: center; margin-bottom: 2.5rem; }
-  header h1 { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 2rem; color: #7850a0; margin: 0; }
-  header p { font-style: italic; color: #7a5890; margin: 0.3rem 0 0; }
-  article { background: rgba(255,255,255,0.92); border: 1px solid #d8c4e8; border-radius: 12px; padding: 1.4rem 1.6rem; margin-bottom: 1.2rem; box-shadow: 0 6px 20px rgba(120,80,160,0.1); }
-  article .date { font-family: 'Cinzel', serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9a78b8; margin: 0 0 0.3rem; }
-  article h2 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.3rem; color: #3a1858; margin: 0 0 0.8rem; }
+  header h1 { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 2rem; color: #a67c1e; margin: 0; }
+  header p { font-style: italic; color: #8a6f4a; margin: 0.3rem 0 0; }
+  article { background: rgba(255,255,255,0.92); border: 1px solid #ddcca6; border-radius: 12px; padding: 1.4rem 1.6rem; margin-bottom: 1.2rem; box-shadow: 0 6px 20px rgba(120,90,50,0.1); }
+  article .date { font-family: 'Cinzel', serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #a8842e; margin: 0 0 0.3rem; }
+  article h2 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.3rem; color: #2c2117; margin: 0 0 0.8rem; }
   article .text { font-size: 1rem; line-height: 1.85; font-style: italic; white-space: pre-wrap; }
   .text ul { margin: 0.3rem 0 0.3rem 1.2rem; padding: 0; }
   .text li { margin-bottom: 0.2rem; }
-  .text b, .text strong { color: #5a3878; }
-  .text em, .text i { color: #7858a0; }
-  .text hr { border: none; border-top: 1px solid #e0d0f0; margin: 0.5rem 0; }
-  .text h1 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.6rem; color: #3a1858; margin: 0.8rem 0 0.4rem; padding-bottom: 0.25rem; border-bottom: 2px solid #d8b8e8; }
-  .text h2 { font-family: 'Cinzel', serif; font-size: 1.05rem; letter-spacing: 0.08em; text-transform: uppercase; color: #5a3890; margin: 0.7rem 0 0.35rem; padding-bottom: 0.2rem; border-bottom: 1px solid #e8d8f4; }
-  .text h3 { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: #7850a0; margin: 0.6rem 0 0.3rem; }
-  footer { text-align: center; font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #b0a0c0; margin-top: 2rem; }
+  .text b, .text strong { color: #7a5a1e; }
+  .text em, .text i { color: #8a6a2a; }
+  .text hr { border: none; border-top: 1px solid #e5d6b8; margin: 0.5rem 0; }
+  .text h1 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.6rem; color: #2c2117; margin: 0.8rem 0 0.4rem; padding-bottom: 0.25rem; border-bottom: 2px solid #d8c090; }
+  .text h2 { font-family: 'Cinzel', serif; font-size: 1.05rem; letter-spacing: 0.08em; text-transform: uppercase; color: #8a6a1a; margin: 0.7rem 0 0.35rem; padding-bottom: 0.2rem; border-bottom: 1px solid #ece0c6; }
+  .text h3 { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: #a67c1e; margin: 0.6rem 0 0.3rem; }
+  footer { text-align: center; font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #b3a078; margin-top: 2rem; }
   @media print {
     body { background: #fff; }
     article { break-inside: avoid; box-shadow: none; }
@@ -131,7 +131,7 @@ ${articles}
           return (
             <div key={r.id} className="card">
               <div className="card-header" onClick={() => setExpanded(e => ({...e, [r.id]: !e[r.id]}))}>
-                <span style={{fontFamily:"'Cinzel',serif",fontSize:"0.6rem",fontWeight:700,color:"#ddc8f0",lineHeight:1.4,paddingTop:"0.1rem",flexShrink:0}}>
+                <span style={{fontFamily:"'Cinzel',serif",fontSize:"0.6rem",fontWeight:700,color:"#e2d4b6",lineHeight:1.4,paddingTop:"0.1rem",flexShrink:0}}>
                   {r.date ? new Date(r.date + "T12:00:00").toLocaleDateString("de-DE", {day:"numeric",month:"short",year:"numeric"}) : formatDate(r.ts)}
                 </span>
                 <div className="card-info">
@@ -153,7 +153,7 @@ ${articles}
                     </div>
                   )}
                   <div className="react-add-row">
-                    <span style={{fontFamily:"'Cinzel',serif",fontSize:"0.42rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#8a68a8",alignSelf:"center"}}>Reagieren:</span>
+                    <span style={{fontFamily:"'Cinzel',serif",fontSize:"0.42rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#9a8258",alignSelf:"center"}}>Reagieren:</span>
                     {REACTIONS.map(emoji => <button key={emoji} className="add-react-btn" onClick={() => react(r.id, emoji)}>{emoji}</button>)}
                   </div>
                 </div>
