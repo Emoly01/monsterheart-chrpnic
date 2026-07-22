@@ -71,7 +71,7 @@ export default function WitchlightChronik() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "radial-gradient(ellipse at 12% 6%, rgba(227,196,106,0.13) 0%, transparent 42%), radial-gradient(ellipse at 90% 4%, rgba(192,57,43,0.05) 0%, transparent 34%), radial-gradient(ellipse at 84% 94%, rgba(63,125,92,0.06) 0%, transparent 42%), linear-gradient(160deg, #f6ead0 0%, #efe2c2 40%, #e9e0c6 100%)", color: "#2c2117", fontFamily: "'IM Fell English', Georgia, serif", fontSize: "110%" }}>
+    <div style={{ minHeight: "100vh", background: "radial-gradient(ellipse at 50% 0%, #fde7d3 0%, transparent 55%), linear-gradient(178deg, #fde3cb 0%, #fbdcbb 45%, #f8d3ad 100%)", color: "#2c2117", fontFamily: "'IM Fell English', Georgia, serif", fontSize: "110%" }}>
       {/* PIN overlay */}
       {showPin && (
         <div className="overlay" onClick={() => { setShowPin(false); setPinInput(""); setPinError(false); }}>

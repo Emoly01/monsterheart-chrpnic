@@ -99,7 +99,7 @@ ${articles}
   return (
     <div className="page">
       <div className="section-hdr">
-        <p className="section-title">📖 Chronik</p>
+        <p className="section-title">🌊 Chronik</p>
         <div style={{display:"flex",gap:"0.4rem",flexWrap:"wrap"}}>
           {recaps.length > 0 && <button className="btn-add" onClick={exportChronik} title="Alle Sitzungszusammenfassungen als HTML-Datei herunterladen">⬇ Export</button>}
           {gmMode && <button className="btn-add" onClick={() => setShowRecapForm(v => !v)}>+ Neue Zusammenfassung</button>}
@@ -123,7 +123,11 @@ ${articles}
         </div>
       )}
       {recaps.length === 0
-        ? <div className="empty">Noch keine Sitzungen aufgezeichnet.<br /><span style={{fontSize:"0.85rem"}}>Der erste Eintrag wartet auf sein Abenteuer. ✨</span></div>
+        ? <div className="empty">
+            <div className="empty-emoji">👺🌺</div>
+            <p className="empty-title">Noch keine Sitzungen aufgezeichnet.</p>
+            <p className="empty-sub">Der erste Eintrag wartet auf sein Abenteuer. 🌴</p>
+          </div>
         : recaps.map(r => {
           const isOpen = expanded[r.id];
           const rReacts = reactions[r.id] || {};
