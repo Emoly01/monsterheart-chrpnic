@@ -65,13 +65,13 @@ export default function WitchlightChronik() {
   ];
 
   if (!loaded) return (
-    <div style={{ minHeight: "100vh", background: "#fbf4e6", display: "flex", alignItems: "center", justifyContent: "center", color: "#c99a2e", fontFamily: "serif", fontSize: "1.1rem", letterSpacing: "0.1em" }}>
-      ✨ lädt...
+    <div style={{ minHeight: "100vh", background: "radial-gradient(ellipse at 50% 30%, rgba(227,196,106,0.14) 0%, transparent 55%), #fbf4e6", display: "flex", alignItems: "center", justifyContent: "center", color: "#c99a2e", fontFamily: "serif", fontSize: "1.1rem", letterSpacing: "0.1em" }}>
+      🌺 lädt...
     </div>
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "radial-gradient(ellipse at 8% 18%, rgba(200,175,128,0.035) 0%, transparent 32%), radial-gradient(ellipse at 93% 82%, rgba(196,172,124,0.03) 0%, transparent 26%), radial-gradient(ellipse at 50% 50%, rgba(202,178,130,0.02) 0%, transparent 40%), linear-gradient(160deg, #f2e7cf 0%, #ecdcbf 35%, #e6dcc2 100%)", color: "#2c2117", fontFamily: "'IM Fell English', Georgia, serif", fontSize: "110%" }}>
+    <div style={{ minHeight: "100vh", background: "radial-gradient(ellipse at 12% 6%, rgba(227,196,106,0.13) 0%, transparent 42%), radial-gradient(ellipse at 90% 4%, rgba(192,57,43,0.05) 0%, transparent 34%), radial-gradient(ellipse at 84% 94%, rgba(63,125,92,0.06) 0%, transparent 42%), linear-gradient(160deg, #f6ead0 0%, #efe2c2 40%, #e9e0c6 100%)", color: "#2c2117", fontFamily: "'IM Fell English', Georgia, serif", fontSize: "110%" }}>
       {/* PIN overlay */}
       {showPin && (
         <div className="overlay" onClick={() => { setShowPin(false); setPinInput(""); setPinError(false); }}>
@@ -111,7 +111,7 @@ export default function WitchlightChronik() {
       <div className="hdr">
         <div className="hdr-top">
           <div>
-            <p className="campaign-name">The Trinidad Diaries</p>
+            <p className="campaign-name">The Trinidad Diaries <span className="campaign-flower">🌺</span></p>
             <p className="campaign-sub">Kampagnen-Chronik ✦ Gemeinsame Erinnerungen</p>
           </div>
           <div className="hdr-right">

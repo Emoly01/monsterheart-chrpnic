@@ -1,7 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 * { box-sizing: border-box; }
 ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #e5d6b8; }
-.hdr { background: linear-gradient(135deg, #f5ead2 0%, #efe6cf 100%); border-bottom: 1px solid #e5d6b8; padding: 1rem 1.2rem 0; position: sticky; top: 0; z-index: 30; }
+.hdr { background: linear-gradient(135deg, #fbe7c6 0%, #f6e0ba 45%, #f2e7cf 100%); border-bottom: 1px solid #e5d6b8; padding: 1rem 1.2rem 0; position: sticky; top: 0; z-index: 30; }
+/* tropical tricolour signature stripe — hibiscus · steelpan gold · island green */
+.hdr::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: linear-gradient(90deg, #c0392b 0%, #e3c46a 50%, #3f7d5c 100%); opacity: 0.85; }
+.campaign-flower { font-style: normal; font-size: 0.85em; filter: drop-shadow(0 0 8px rgba(192,57,43,0.35)); }
 .hdr-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.7rem; }
 .campaign-name { font-family: 'Playfair Display', serif; font-size: clamp(1rem, 4vw, 1.5rem); font-weight: 700; font-style: italic; color: #a67c1e; margin: 0; letter-spacing: 0.02em; text-shadow: 0 0 18px rgba(195,58,43,0.22), 0 0 40px rgba(195,58,43,0.09); }
 .campaign-sub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.78rem; color: #8a6f4a; margin: 0.1rem 0 0; }
@@ -21,7 +24,7 @@
 .tab-btn.gm-tab.active { color: #a67c1e; border-bottom-color: #c99a2e; }
 .tab-icon { font-size: 0.8rem; }
 .page { padding: 1.2rem 1.2rem 7rem; max-width: 680px; margin: 0 auto; }
-.se-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: linear-gradient(135deg, #f5ead2 0%, #efe6cf 100%); border-top: 1px solid #ddcca6; padding: 0.6rem 1rem 0.8rem; box-shadow: 0 -2px 8px rgba(140,100,50,0.12), 0 -6px 28px rgba(140,100,50,0.16), 0 -16px 48px rgba(140,100,50,0.06); }
+.se-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: linear-gradient(135deg, #fbe7c6 0%, #f4e0bc 100%); border-top: 3px solid; border-image: linear-gradient(90deg, #c0392b 0%, #e3c46a 50%, #3f7d5c 100%) 1; padding: 0.6rem 1rem 0.8rem; box-shadow: 0 -2px 8px rgba(140,100,50,0.12), 0 -6px 28px rgba(140,100,50,0.16), 0 -16px 48px rgba(140,100,50,0.06); }
 .se-bar-top { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
 .se-date-label { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8a6f4a; white-space: nowrap; }
 .se-date-input { font-family: 'IM Fell English', serif; font-size: 0.82rem; background: rgba(255,255,255,0.8); border: 1px solid #ddcca6; border-radius: 6px; padding: 0.25rem 0.5rem; color: #2c2117; outline: none; }
