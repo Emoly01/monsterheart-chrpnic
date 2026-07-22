@@ -26,7 +26,7 @@ export default function MoodboardTab({ gmMode, playerName, needName, moodboard, 
   return (
     <div className="page">
       <div className="section-hdr"><p className="section-title">🖼 Moodboard</p></div>
-      <p style={{fontFamily:"'IM Fell English',serif",fontStyle:"italic",color:"#7a5890",margin:"0 0 1rem",fontSize:"0.95rem"}}>
+      <p style={{fontFamily:"'IM Fell English',serif",fontStyle:"italic",color:"#8a6f4a",margin:"0 0 1rem",fontSize:"0.95rem"}}>
         Eine gemeinsame Wand der Inspiration — poste Bilder per Link (z.B. von imgur).
       </p>
 

@@ -143,10 +143,10 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
               const isOpen = expandedDossier === d.id;
               const secState = expandedDossierSection[d.id] || {};
               const sections = [
-                { key: "backstory",      label: "Backstory",         icon: "📜", color: "#c094c8", content: d.backstory },
-                { key: "threads",        label: "Plot-Fäden & Hooks",icon: "🕸", color: "#e8c878", content: d.threads },
-                { key: "relationships",  label: "Beziehungen",       icon: "🤝", color: "#94a8d8", content: d.relationships },
-                { key: "arc",            label: "Arc-Notizen",       icon: "🌟", color: "#94c8a8", content: d.arc },
+                { key: "backstory",      label: "Backstory",         icon: "📜", color: "#c99a2e", content: d.backstory },
+                { key: "threads",        label: "Plot-Fäden & Hooks",icon: "🕸", color: "#e3c46a", content: d.threads },
+                { key: "relationships",  label: "Beziehungen",       icon: "🤝", color: "#86bfa0", content: d.relationships },
+                { key: "arc",            label: "Arc-Notizen",       icon: "🌟", color: "#6fae86", content: d.arc },
               ];
               return (
                 <div key={d.id} className="dossier-card">
@@ -156,7 +156,7 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                     </div>
                     <div style={{flex:1}}>
                       <p className="dossier-pc-name">{d.name}</p>
-                      <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.4rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#c0a8d0",margin:"0.1rem 0 0"}}>
+                      <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.4rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#c0ad82",margin:"0.1rem 0 0"}}>
                         {sections.filter(s => s.content).length} / {sections.length} Sektionen ausgefüllt
                       </p>
                     </div>
@@ -184,7 +184,7 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                               <div className="dossier-section-content">
                                 {sec.content
                                   ? <div className="narrative" dangerouslySetInnerHTML={{ __html: sec.content }} />
-                                  : <p style={{fontFamily:"'IM Fell English',serif",fontStyle:"italic",color:"#c0a8d0",fontSize:"0.85rem"}}>Noch nichts eingetragen. Bearbeite das Dossier um Inhalt hinzuzufügen.</p>
+                                  : <p style={{fontFamily:"'IM Fell English',serif",fontStyle:"italic",color:"#c0ad82",fontSize:"0.85rem"}}>Noch nichts eingetragen. Bearbeite das Dossier um Inhalt hinzuzufügen.</p>
                                 }
                               </div>
                             )}
@@ -213,10 +213,10 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
               <div className="f-group"><label className="f-label">Typ</label>
                 <div className="world-filter-row">
                   {[
-                    { id: "ort",    label: "Ort / Karte",       icon: "🗺", color: "#94c8a8" },
-                    { id: "wissen", label: "Wissen / Lore",     icon: "📚", color: "#c094c8" },
-                    { id: "regel",  label: "Hausregel",         icon: "⚖",  color: "#e8c878" },
-                    { id: "fraktion",label: "Fraktion / Gruppe",icon: "🏴", color: "#94a8d8" },
+                    { id: "ort",    label: "Ort / Karte",       icon: "🗺", color: "#6fae86" },
+                    { id: "wissen", label: "Wissen / Lore",     icon: "📚", color: "#c99a2e" },
+                    { id: "regel",  label: "Hausregel",         icon: "⚖",  color: "#e3c46a" },
+                    { id: "fraktion",label: "Fraktion / Gruppe",icon: "🏴", color: "#86bfa0" },
                   ].map(t => (
                     <span key={t.id} className={`world-filter-btn ${worldForm.type === t.id ? "active" : ""}`}
                       onClick={() => setWorldForm(f=>({...f,type:t.id}))}>{t.icon} {t.label}</span>
@@ -238,11 +238,11 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
 
           {(() => {
             const WORLD_TYPES = [
-              { id: "all",      label: "Alle",             icon: "✦",  color: "#8a6aaa" },
-              { id: "ort",      label: "Orte",             icon: "🗺", color: "#94c8a8" },
-              { id: "wissen",   label: "Wissen",           icon: "📚", color: "#c094c8" },
-              { id: "regel",    label: "Hausregeln",       icon: "⚖",  color: "#e8c878" },
-              { id: "fraktion", label: "Fraktionen",       icon: "🏴", color: "#94a8d8" },
+              { id: "all",      label: "Alle",             icon: "✦",  color: "#9a8258" },
+              { id: "ort",      label: "Orte",             icon: "🗺", color: "#6fae86" },
+              { id: "wissen",   label: "Wissen",           icon: "📚", color: "#c99a2e" },
+              { id: "regel",    label: "Hausregeln",       icon: "⚖",  color: "#e3c46a" },
+              { id: "fraktion", label: "Fraktionen",       icon: "🏴", color: "#86bfa0" },
             ];
             const filtered = worldFilter === "all" ? worldEntries : worldEntries.filter(w => w.type === worldFilter);
             return (
@@ -269,11 +269,11 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                     <div className="world-detail">
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"0.6rem"}}>
                         <div>
-                          <span className="world-type-badge" style={{color:wtype?.color||"#c094c8",borderColor:wtype?.color||"#c094c8",marginBottom:"0.3rem"}}>
+                          <span className="world-type-badge" style={{color:wtype?.color||"#c99a2e",borderColor:wtype?.color||"#c99a2e",marginBottom:"0.3rem"}}>
                             {wtype?.icon} {wtype?.label}
                           </span>
-                          <p style={{fontFamily:"'Playfair Display',serif",fontSize:"1.05rem",fontWeight:700,fontStyle:"italic",color:"#3a1858",margin:"0.3rem 0 0.15rem"}}>{w.title}</p>
-                          <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.4rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#c0a8d0"}}>{formatDate(w.ts)}</p>
+                          <p style={{fontFamily:"'Playfair Display',serif",fontSize:"1.05rem",fontWeight:700,fontStyle:"italic",color:"#2c2117",margin:"0.3rem 0 0.15rem"}}>{w.title}</p>
+                          <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.4rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#c0ad82"}}>{formatDate(w.ts)}</p>
                         </div>
                         <div style={{display:"flex",gap:"0.3rem",alignItems:"center"}}>
                           <button className="card-act-edit" onClick={() => { setWorldForm({title:w.title,text:w.text||"",type:w.type,imageUrl:w.imageUrl||""}); setEditingWorld(w.id); setShowWorldForm(true); setExpandedWorld(null); }}>✎</button>
@@ -281,7 +281,7 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                           <button className="btn-danger" onClick={() => setExpandedWorld(null)}>✕</button>
                         </div>
                       </div>
-                      {w.imageUrl && <img src={w.imageUrl} alt={w.title} style={{width:"100%",maxHeight:"220px",objectFit:"contain",borderRadius:"8px",marginBottom:"0.8rem",background:"#f8f0fc",display:"block"}} onError={e => e.target.style.display="none"} />}
+                      {w.imageUrl && <img src={w.imageUrl} alt={w.title} style={{width:"100%",maxHeight:"220px",objectFit:"contain",borderRadius:"8px",marginBottom:"0.8rem",background:"#f7efd8",display:"block"}} onError={e => e.target.style.display="none"} />}
                       {w.text && <div className="narrative" dangerouslySetInnerHTML={{ __html: w.text }} />}
                     </div>
                   );
@@ -295,11 +295,11 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                       <div key={w.id} className="world-card" onClick={() => setExpandedWorld(expandedWorld === w.id ? null : w.id)}>
                         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:"0.5rem"}}>
                           <div>
-                            <span className="world-type-badge" style={{color:wtype?.color||"#c094c8",borderColor:wtype?.color||"#c094c8"}}>
+                            <span className="world-type-badge" style={{color:wtype?.color||"#c99a2e",borderColor:wtype?.color||"#c99a2e"}}>
                               {wtype?.icon} {wtype?.label}
                             </span>
-                            <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.7rem",fontWeight:700,letterSpacing:"0.06em",color:"#3a1858",margin:"0.3rem 0 0.1rem"}}>{w.title}</p>
-                            <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.38rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#c0a8d0"}}>{formatDate(w.ts)}</p>
+                            <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.7rem",fontWeight:700,letterSpacing:"0.06em",color:"#2c2117",margin:"0.3rem 0 0.1rem"}}>{w.title}</p>
+                            <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.38rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#c0ad82"}}>{formatDate(w.ts)}</p>
                           </div>
                         </div>
                       </div>
@@ -360,7 +360,7 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
               {/* Done notes */}
               {quickNotes.filter(n=>n.done).length > 0 && (
                 <div>
-                  <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.45rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"#c0a8d0",marginBottom:"0.4rem"}}>✓ Erledigt ({quickNotes.filter(n=>n.done).length})</p>
+                  <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.45rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"#c0ad82",marginBottom:"0.4rem"}}>✓ Erledigt ({quickNotes.filter(n=>n.done).length})</p>
                   {quickNotes.filter(n=>n.done).map(n => (
                     <div key={n.id} className="qn-card done">
                       <div className="qn-checkbox checked" onClick={() => toggleQuickNote(n.id)}>✓</div>
@@ -439,17 +439,17 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                       <div key={n.id} className="gm-note-card">
                         <div style={{display:"flex",alignItems:"flex-start",gap:"0.6rem",cursor:"pointer"}} onClick={() => setExpandedGmNote(isOpen ? null : n.id)}>
                           <div style={{flex:1}}>
-                            <p style={{fontFamily:"'Playfair Display',serif",fontSize:"0.95rem",fontWeight:700,color:"#5a3878",margin:"0 0 0.15rem"}}>{n.title}</p>
-                            <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.42rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#c0a8d0"}}>{formatDate(n.ts)}</p>
+                            <p style={{fontFamily:"'Playfair Display',serif",fontSize:"0.95rem",fontWeight:700,color:"#7a5a1e",margin:"0 0 0.15rem"}}>{n.title}</p>
+                            <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.42rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#c0ad82"}}>{formatDate(n.ts)}</p>
                           </div>
                           <div style={{display:"flex",gap:"0.3rem",alignItems:"center"}}>
                             <button className="card-act-edit" onClick={e => { e.stopPropagation(); setGmNoteForm({title:n.title,text:n.text,category:n.category}); setEditingGmNote(n.id); setShowGmNoteForm(true); setExpandedGmNote(null); }}>✎</button>
                             <button className="btn-danger" onClick={e => { e.stopPropagation(); ugn(gmNotes.filter(x => x.id !== n.id)); }}>✕</button>
-                            <span style={{color:"#d8c8e8",fontSize:"0.7rem",transition:"transform 0.2s",transform:isOpen?"rotate(180deg)":"none"}}>▼</span>
+                            <span style={{color:"#ddcca6",fontSize:"0.7rem",transition:"transform 0.2s",transform:isOpen?"rotate(180deg)":"none"}}>▼</span>
                           </div>
                         </div>
                         {isOpen && n.text && (
-                          <div style={{marginTop:"0.8rem",paddingTop:"0.8rem",borderTop:"1px solid #f0e4f8"}}>
+                          <div style={{marginTop:"0.8rem",paddingTop:"0.8rem",borderTop:"1px solid #f3ebd2"}}>
                             <div className="narrative" dangerouslySetInnerHTML={{ __html: n.text }} />
                           </div>
                         )}

@@ -67,7 +67,7 @@ export default function ZitateTab({ gmMode, playerName, quotes, uqt }) {
                   <p className="quote-text">{q.text}</p>
                 )}
                 <p className="quote-speaker">— {q.speaker}</p>
-                {q.sitzung ? <p style={{fontFamily:"'IM Fell English',serif",fontStyle:"italic",fontSize:"0.8rem",color:"#7a5890",margin:"0.25rem 0 0",textAlign:"right"}}>{q.sitzung.split("-").reverse().join(".")}</p> : null}
+                {q.sitzung ? <p style={{fontFamily:"'IM Fell English',serif",fontStyle:"italic",fontSize:"0.8rem",color:"#8a6f4a",margin:"0.25rem 0 0",textAlign:"right"}}>{q.sitzung.split("-").reverse().join(".")}</p> : null}
               </div>
             );
           })}
