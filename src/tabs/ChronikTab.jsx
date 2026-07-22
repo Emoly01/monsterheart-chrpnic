@@ -2,11 +2,22 @@ import { useState } from "react";
 import RichEditor from "../RichEditor.jsx";
 import { REACTIONS, makeId, formatDate } from "../constants.js";
 
-export default function ChronikTab({ gmMode, recaps, ur, reactions, react }) {
+export default function ChronikTab({ gmMode, playerName, needName, recaps, ur, reactions, react }) {
   const [expanded, setExpanded] = useState({});
   const [recapForm, setRecapForm] = useState({ date: "", title: "", text: "" });
   const [editingRecap, setEditingRecap] = useState(null);
   const [showRecapForm, setShowRecapForm] = useState(false);
+
+  // Anyone may write an entry; the GM and the entry's own author may edit or
+  // delete it.
+  const canEdit = (r) => gmMode || (!!r.author && r.author === playerName);
+
+  const openNewForm = () => {
+    if (!gmMode && !playerName) { needName(); return; }
+    setEditingRecap(null);
+    setRecapForm({ date: "", title: "", text: "" });
+    setShowRecapForm(true);
+  };
 
   const addRecap = () => {
     if (!recapForm.title.trim() || !recapForm.text.trim()) return;
@@ -14,7 +25,7 @@ export default function ChronikTab({ gmMode, recaps, ur, reactions, react }) {
       ur(recaps.map(r => r.id === editingRecap ? { ...r, date: recapForm.date || r.date, title: recapForm.title.trim(), text: recapForm.text } : r));
       setEditingRecap(null);
     } else {
-      ur([{ id: makeId(), date: recapForm.date || new Date().toISOString().slice(0,10), title: recapForm.title.trim(), text: recapForm.text, ts: Date.now() }, ...recaps]);
+      ur([{ id: makeId(), date: recapForm.date || new Date().toISOString().slice(0,10), title: recapForm.title.trim(), text: recapForm.text, author: playerName?.trim() || (gmMode ? "SL" : "Gast"), ts: Date.now() }, ...recaps]);
     }
     setRecapForm({ date: "", title: "", text: "" }); setShowRecapForm(false);
   };
@@ -46,7 +57,7 @@ export default function ChronikTab({ gmMode, recaps, ur, reactions, react }) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Witchlight M — Chronik</title>
+<title>The Trinidad Diaries — Chronik</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
@@ -77,7 +88,7 @@ export default function ChronikTab({ gmMode, recaps, ur, reactions, react }) {
 <body>
 <div class="wrap">
   <header>
-    <h1>Witchlight M</h1>
+    <h1>The Trinidad Diaries</h1>
     <p>Kampagnen-Chronik ✦ ${sorted.length} Sitzung${sorted.length !== 1 ? "en" : ""}</p>
   </header>
 ${articles}
@@ -89,7 +100,7 @@ ${articles}
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `witchlight-chronik-${new Date().toISOString().slice(0, 10)}.html`;
+    a.download = `trinidad-diaries-${new Date().toISOString().slice(0, 10)}.html`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -101,13 +112,13 @@ ${articles}
       <div className="section-hdr">
         <p className="section-title">🌊 Chronik</p>
         <div style={{display:"flex",gap:"0.4rem",flexWrap:"wrap"}}>
-          {recaps.length > 0 && <button className="btn-add" onClick={exportChronik} title="Alle Sitzungszusammenfassungen als HTML-Datei herunterladen">⬇ Export</button>}
-          {gmMode && <button className="btn-add" onClick={() => setShowRecapForm(v => !v)}>+ Neue Zusammenfassung</button>}
+          {recaps.length > 0 && <button className="btn-add" onClick={exportChronik} title="Alle Einträge als HTML-Datei herunterladen">⬇ Export</button>}
+          <button className="btn-primary" onClick={openNewForm}>+ Neuer Eintrag</button>
         </div>
       </div>
-      {gmMode && showRecapForm && (
+      {showRecapForm && (
         <div className="form-panel">
-          <p className="form-title">{editingRecap ? "Recap bearbeiten" : "Sitzungszusammenfassung"}</p>
+          <p className="form-title">{editingRecap ? "Eintrag bearbeiten" : "Neuer Eintrag"}</p>
           <div className="f-row">
             <div className="f-group"><label className="f-label">Datum</label>
               <input className="f-input" type="date" value={recapForm.date} onChange={e => setRecapForm(f => ({...f, date: e.target.value}))} /></div>
@@ -140,9 +151,10 @@ ${articles}
                 </span>
                 <div className="card-info">
                   <p className="card-title">{r.title}</p>
+                  {r.author && <p className="card-meta">✍ {r.author}</p>}
                 </div>
-                {gmMode && <button className="btn-danger" onClick={e => { e.stopPropagation(); if(window.confirm("Löschen?")) ur(recaps.filter(x => x.id !== r.id)); }}>✕</button>}
-                {gmMode && <button className="card-act-edit" onClick={e => { e.stopPropagation(); startEditRecap(r); }}>✎</button>}
+                {canEdit(r) && <button className="btn-danger" onClick={e => { e.stopPropagation(); if(window.confirm("Löschen?")) ur(recaps.filter(x => x.id !== r.id)); }}>✕</button>}
+                {canEdit(r) && <button className="card-act-edit" onClick={e => { e.stopPropagation(); startEditRecap(r); }}>✎</button>}
                 <span className={`card-chevron ${isOpen ? "open" : ""}`}>▼</span>
               </div>
               {isOpen && (

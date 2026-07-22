@@ -148,13 +148,15 @@
 .card-act-edit:hover { background: #eee0c2; color: #a67c1e; }
 /* ── Rich Editor ── */
 .rich-editor-wrap { border: 1px solid #e5d6b8; border-radius: 8px; overflow: visible; background: rgba(255,255,255,0.9); transition: border-color 0.15s; }
-.rich-editor-wrap:focus-within { border-color: #c99a2e; }
-.rich-toolbar { display: none; }
-.rich-tool-btn { font-family: 'Cinzel', serif; font-size: 0.7rem; min-width: 1.8rem; height: 1.8rem; background: rgba(255,255,255,0.8); border: 1px solid #e5d6b8; color: #a67c1e; cursor: pointer; border-radius: 4px; transition: all 0.12s; display: flex; align-items: center; justify-content: center; padding: 0 0.3rem; }
-.rich-tool-btn:hover { background: #eee0c2; border-color: #c99a2e; }
-.rich-tool-btn:active { transform: scale(0.92); background: #ddcca8; }
-.rich-tool-divider { width: 1px; height: 1.2rem; background: #e5d6b8; margin: 0 0.1rem; flex-shrink: 0; }
-.rich-content { padding: 0.6rem 0.8rem; font-family: 'IM Fell English', serif; font-size: 0.95rem; color: #2c2117; line-height: 1.85; outline: none; }
+.rich-editor-wrap:focus-within { border-color: #12a39a; }
+/* Persistent, always-visible formatting toolbar (was a hidden selection popup). */
+.rich-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; padding: 0.4rem 0.5rem; background: linear-gradient(#fffaf0, #fdf3e2); border-bottom: 1px solid #ece0c4; border-radius: 8px 8px 0 0; }
+.rich-tool-btn { font-family: 'Cinzel', serif; font-size: 0.72rem; min-width: 1.9rem; height: 1.9rem; background: rgba(255,255,255,0.9); border: 1px solid #e5d6b8; color: #0d8a84; cursor: pointer; border-radius: 5px; transition: all 0.12s; display: flex; align-items: center; justify-content: center; padding: 0 0.35rem; }
+.rich-tool-btn:hover { background: rgba(18,163,154,0.1); border-color: #12a39a; }
+.rich-tool-btn:active { transform: scale(0.92); background: rgba(18,163,154,0.2); }
+.rich-tool-divider { width: 1px; height: 1.3rem; background: #e5d6b8; margin: 0 0.15rem; flex-shrink: 0; }
+/* The writing area scrolls under the fixed toolbar as you type. */
+.rich-content { padding: 0.6rem 0.8rem; font-family: 'IM Fell English', serif; font-size: 0.95rem; color: #2c2117; line-height: 1.85; outline: none; max-height: 42vh; overflow-y: auto; }
 .rich-content:empty:before { content: attr(data-placeholder); color: #d8caa2; font-style: italic; pointer-events: none; }
 .rich-content ul { margin: 0.3rem 0 0.3rem 1.2rem; padding: 0; }
 .rich-content ul ul { margin: 0.15rem 0 0.15rem 1.4rem; }
