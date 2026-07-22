@@ -1,0 +1,400 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+* { box-sizing: border-box; }
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #e0d0e8; }
+.hdr { background: linear-gradient(135deg, #f0e8f8 0%, #e8eef8 100%); border-bottom: 1px solid #e0d0e8; padding: 1rem 1.2rem 0; position: sticky; top: 0; z-index: 30; }
+.hdr-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.7rem; }
+.campaign-name { font-family: 'Playfair Display', serif; font-size: clamp(1rem, 4vw, 1.5rem); font-weight: 700; font-style: italic; color: #7850a0; margin: 0; letter-spacing: 0.02em; text-shadow: 0 0 18px rgba(148,80,180,0.22), 0 0 40px rgba(148,80,180,0.09); }
+.campaign-sub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.78rem; color: #7a5890; margin: 0.1rem 0 0; }
+.hdr-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; }
+.gm-badge { font-family: 'Cinzel', serif; font-size: 0.45rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 2px; }
+.gm-badge.active { background: #e8d8f8; color: #7850a0; border: 1px solid #c8a8e8; }
+.gm-badge.inactive { background: #f0f0f0; color: #b0a0b8; border: 1px solid #e0d8e8; cursor: pointer; transition: all 0.15s; }
+.gm-badge.inactive:hover { background: #e8d8f8; color: #7850a0; }
+.player-chip { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase; color: #6a4890; cursor: pointer; }
+.player-chip:hover { color: #4a2870; }
+.tab-row { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; border-top: 1px solid rgba(255,255,255,0.6); }
+.tab-row::-webkit-scrollbar { display: none; }
+.tab-btn { font-family: 'Cinzel', serif; font-size: 0.48rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.55rem 0.8rem; background: none; border: none; cursor: pointer; color: #8a6aaa; white-space: nowrap; transition: all 0.15s; border-bottom: 2px solid transparent; display: flex; align-items: center; gap: 0.3rem; }
+.tab-btn.active { color: #7850a0; border-bottom-color: #a078d0; text-shadow: 0 0 10px rgba(148,80,200,0.28); }
+.tab-btn:hover:not(.active) { color: #6a4898; }
+.tab-btn.gm-tab { color: #c094c8; }
+.tab-btn.gm-tab.active { color: #7850a0; border-bottom-color: #c094c8; }
+.tab-icon { font-size: 0.8rem; }
+.page { padding: 1.2rem 1.2rem 7rem; max-width: 680px; margin: 0 auto; }
+.se-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: linear-gradient(135deg, #f0e8f8 0%, #e8eef8 100%); border-top: 1px solid #d8c4e8; padding: 0.6rem 1rem 0.8rem; box-shadow: 0 -2px 8px rgba(140,80,200,0.12), 0 -6px 28px rgba(140,80,200,0.16), 0 -16px 48px rgba(140,80,200,0.06); }
+.se-bar-top { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.se-date-label { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7a5890; white-space: nowrap; }
+.se-date-input { font-family: 'IM Fell English', serif; font-size: 0.82rem; background: rgba(255,255,255,0.8); border: 1px solid #d8c4e8; border-radius: 6px; padding: 0.25rem 0.5rem; color: #3a1858; outline: none; }
+.se-date-input:focus { border-color: #c094c8; }
+.se-toggle { display: flex; border: 1px solid #d8c4e8; border-radius: 6px; overflow: hidden; margin-left: auto; }
+.se-toggle-btn { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.65rem; background: none; border: none; cursor: pointer; color: #8a6aaa; transition: all 0.15s; }
+.se-toggle-btn.active { background: #c094c8; color: #fff; }
+.se-row { display: flex; gap: 0.5rem; align-items: center; }
+.se-input { font-family: 'IM Fell English', serif; font-size: 0.9rem; background: rgba(255,255,255,0.85); border: 1px solid #d8c4e8; border-radius: 6px; padding: 0.3rem 0.6rem; color: #3a1858; outline: none; flex: 1; }
+.se-input:focus { border-color: #c094c8; }
+.se-input-speaker { flex: 0 0 120px; }
+.se-save-btn { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.35rem 0.8rem; background: linear-gradient(135deg, #b078d0, #9878c8); color: #fff; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; }
+.se-save-btn:hover { opacity: 0.85; }
+.card { background: radial-gradient(ellipse at 20% 30%, rgba(212,186,144,0.06) 0%, transparent 55%), radial-gradient(ellipse at 80% 72%, rgba(206,180,138,0.05) 0%, transparent 50%), radial-gradient(ellipse at 58% 8%, rgba(215,192,148,0.04) 0%, transparent 45%) rgba(255,255,255,0.92); border: 1px solid #d8c4e8; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 0.7rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 4px rgba(120,80,160,0.07), 0 6px 20px rgba(120,80,160,0.1), 0 16px 40px rgba(120,80,160,0.05); animation: fadeIn 0.2s ease; backdrop-filter: blur(4px); }
+.card:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 6px rgba(120,80,160,0.1), 0 10px 28px rgba(120,80,160,0.14), 0 20px 48px rgba(120,80,160,0.06); }
+.card-header { display: flex; align-items: flex-start; gap: 0.7rem; cursor: pointer; }
+.card-info { flex: 1; }
+.card-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: #3a1858; margin: 0 0 0.15rem; line-height: 1.3; }
+.card-meta { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7a5890; }
+.card-chevron { color: #d8c8e8; font-size: 0.7rem; flex-shrink: 0; margin-top: 0.3rem; transition: transform 0.2s; }
+.card-chevron.open { transform: rotate(180deg); }
+.card-body { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid #f0e4f8; }
+.narrative { font-family: 'IM Fell English', serif; font-size: 0.95rem; line-height: 1.85; color: #2a1838; font-style: italic; white-space: pre-wrap; }
+.reactions-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.8rem; align-items: center; }
+.react-btn { background: rgba(240,232,252,0.8); border: 1px solid #e4d4f0; border-radius: 20px; padding: 0.2rem 0.5rem; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 0.2rem; transition: all 0.15s; }
+.react-btn:hover { background: #e8d8f8; border-color: #c8a8e8; transform: scale(1.05); }
+.react-count { font-family: 'Cinzel', serif; font-size: 0.5rem; color: #5a3890; }
+.react-add-row { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed #e8d8f0; }
+.add-react-btn { font-size: 1rem; background: none; border: 1px dashed #e0d0e8; border-radius: 20px; padding: 0.15rem 0.4rem; cursor: pointer; transition: all 0.15s; opacity: 0.6; }
+.add-react-btn:hover { opacity: 1; background: rgba(240,232,252,0.8); transform: scale(1.1); }
+.npc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.8rem; }
+.npc-card { background: radial-gradient(ellipse at 25% 35%, rgba(212,186,144,0.05) 0%, transparent 52%), radial-gradient(ellipse at 75% 65%, rgba(206,180,138,0.04) 0%, transparent 48%), radial-gradient(ellipse at 50% 5%, rgba(214,190,146,0.03) 0%, transparent 42%) rgba(255,255,255,0.8); border: 1px solid #e8d8f0; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.15s; box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 2px 6px rgba(120,80,160,0.07), 0 8px 22px rgba(120,80,160,0.09); }
+.npc-card:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 4px 10px rgba(120,80,160,0.1), 0 12px 32px rgba(120,80,160,0.14); }
+.npc-card.selected { border-color: #b078d0; box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 4px 16px rgba(120,80,160,0.2), 0 12px 32px rgba(120,80,160,0.12); }
+.npc-img { width: 100%; height: 180px; background: linear-gradient(135deg, #f0e8f8, #e8eef8); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #d0c0e0; overflow: hidden; }
+.npc-img img { width: 100%; height: 100%; object-fit: contain; object-position: center top; }
+.npc-card-body { padding: 0.6rem 0.7rem; }
+.npc-card-name { font-family: 'Cinzel', serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; color: #3a1858; margin: 0 0 0.15rem; }
+.npc-card-faction { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.72rem; color: #6a4888; margin: 0; }
+.npc-status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 0.3rem; }
+.npc-detail { background: radial-gradient(ellipse at 18% 28%, rgba(212,186,144,0.06) 0%, transparent 55%), radial-gradient(ellipse at 82% 74%, rgba(206,180,138,0.05) 0%, transparent 50%), radial-gradient(ellipse at 60% 10%, rgba(215,192,148,0.04) 0%, transparent 44%) rgba(255,255,255,0.9); border: 1px solid #e0d0f0; border-radius: 16px; padding: 1.2rem; margin-bottom: 0.8rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 10px rgba(120,80,160,0.08), 0 12px 32px rgba(120,80,160,0.1), 0 24px 56px rgba(120,80,160,0.05); scroll-margin-top: 120px; }
+.npc-detail-img { width: 100%; max-height: 280px; object-fit: contain; border-radius: 10px; margin-bottom: 0.8rem; background: linear-gradient(135deg, #f0e8f8, #e8eef8); display: block; }
+.npc-detail-img-placeholder { width: 100%; height: 80px; background: linear-gradient(135deg, #f0e8f8, #e8eef8); border-radius: 10px; margin-bottom: 0.8rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #d0c0e0; }
+.npc-detail-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #3a1858; margin: 0 0 0.2rem; }
+.npc-detail-faction { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.85rem; color: #6a4888; margin: 0 0 0.5rem; }
+.npc-desc { font-size: 0.9rem; color: #3a2048; line-height: 1.7; margin-bottom: 0.8rem; }
+.impression-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem; }
+.impression { background: rgba(240,232,252,0.5); border: 1px solid #e8d8f0; border-radius: 8px; padding: 0.5rem 0.7rem; font-style: italic; font-size: 0.85rem; color: #3a1848; }
+.impression-author { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase; color: #7a5890; margin-top: 0.2rem; }
+.quest-card { background: radial-gradient(ellipse at 22% 32%, rgba(212,186,144,0.055) 0%, transparent 54%), radial-gradient(ellipse at 78% 68%, rgba(206,180,138,0.045) 0%, transparent 48%), radial-gradient(ellipse at 55% 10%, rgba(214,190,146,0.035) 0%, transparent 43%) rgba(255,255,255,0.75); border: 1px solid #e8d8f0; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.7rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 2px 6px rgba(120,80,160,0.06), 0 6px 18px rgba(120,80,160,0.08); }
+.quest-status { font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 3px; border: 1px solid var(--qc); color: var(--qc); flex-shrink: 0; margin-top: 0.15rem; white-space: nowrap; }
+.quest-title { font-family: 'Cinzel', serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; color: #3a1858; margin: 0 0 0.2rem; }
+.quest-desc { font-size: 0.85rem; color: #4a3060; line-height: 1.5; margin: 0; }
+.quest-by { font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; color: #7a5890; margin-top: 0.3rem; }
+.suggested-badge { font-family: 'Cinzel', serif; font-size: 0.38rem; letter-spacing: 0.1em; text-transform: uppercase; color: #b8a0c8; background: #f4ecfc; border: 1px dashed #d8c8e8; padding: 0.1rem 0.35rem; border-radius: 2px; margin-left: 0.4rem; }
+.quotes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.8rem; }
+.quote-card { background: radial-gradient(ellipse at 15% 25%, rgba(212,186,144,0.06) 0%, transparent 56%), radial-gradient(ellipse at 85% 75%, rgba(206,180,138,0.05) 0%, transparent 48%), radial-gradient(ellipse at 52% 6%, rgba(215,192,148,0.04) 0%, transparent 44%) rgba(255,255,255,0.75); border: 1px solid #e8d8f0; border-radius: 10px; padding: 1rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 6px rgba(120,80,160,0.07), 0 8px 22px rgba(120,80,160,0.1); }
+.quote-mark { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #e0d0f0; line-height: 0.5; display: block; margin-bottom: 0.4rem; }
+.quote-text { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; color: #3a1858; line-height: 1.65; margin: 0 0 0.5rem; }
+.quote-speaker { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7a5890; }
+.quote-actions { display: flex; gap: 0.3rem; float: right; }
+.quote-del { background: none; border: none; color: #e0d0e8; cursor: pointer; font-size: 0.75rem; transition: color 0.15s; padding: 0; line-height: 1; }
+.quote-del:hover { color: #d08090; }
+.quote-edit-btn { background: none; border: none; color: #c8b8d8; cursor: pointer; font-size: 0.7rem; transition: color 0.15s; padding: 0; line-height: 1; font-family: 'Cinzel', serif; letter-spacing: 0.05em; }
+.quote-edit-btn:hover { color: #9070b0; }
+.snippet-card { background: radial-gradient(ellipse at 20% 30%, rgba(212,186,144,0.06) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, rgba(206,180,138,0.05) 0%, transparent 50%), radial-gradient(ellipse at 58% 8%, rgba(215,192,148,0.04) 0%, transparent 45%) rgba(255,255,255,0.75); border: 1px solid #e8d8f0; border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 0.8rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 6px rgba(120,80,160,0.07), 0 8px 24px rgba(120,80,160,0.1), 0 18px 40px rgba(120,80,160,0.05); }
+.snippet-title { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; font-style: italic; color: #3a1858; margin: 0 0 0.3rem; }
+.snippet-author { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase; color: #7a5890; margin: 0 0 0.5rem; }
+.snippet-text { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.92rem; line-height: 1.9; color: #2a1838; }
+.snippet-meta { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7a5890; margin-top: 0.7rem; }
+.pnote-card { background: radial-gradient(ellipse at 25% 40%, rgba(212,186,144,0.05) 0%, transparent 52%), radial-gradient(ellipse at 75% 60%, rgba(206,180,138,0.04) 0%, transparent 46%) rgba(255,255,255,0.7); border: 1px solid #e0d4ec; border-left: 3px solid #c094c8; border-radius: 0 10px 10px 0; padding: 0.8rem 1rem; margin-bottom: 0.5rem; }
+.pnote-author { font-family: 'Cinzel', serif; font-size: 0.48rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #c094c8; margin: 0 0 0.3rem; }
+.pnote-text { font-size: 0.92rem; color: #3a2048; line-height: 1.6; margin: 0; }
+.pnote-date { font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.1em; color: #7a5890; margin-top: 0.25rem; }
+/* ── Theorien ── */
+.theory-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e8d8f0; }
+.theory-card { background: radial-gradient(ellipse at 20% 30%, rgba(212,186,144,0.055) 0%, transparent 54%), radial-gradient(ellipse at 80% 72%, rgba(206,180,138,0.045) 0%, transparent 49%), radial-gradient(ellipse at 56% 7%, rgba(214,190,146,0.035) 0%, transparent 43%) rgba(255,255,255,0.75); border: 1px solid #e8d8f0; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 0.7rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.88), 0 2px 6px rgba(120,80,160,0.07), 0 8px 22px rgba(120,80,160,0.09); transition: box-shadow 0.15s; }
+.theory-card:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.88), 0 3px 8px rgba(120,80,160,0.1), 0 10px 28px rgba(120,80,160,0.13); }
+.theory-cat-badge { font-family: 'Cinzel', serif; font-size: 0.38rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.45rem; border-radius: 3px; border: 1px solid; display: inline-flex; align-items: center; gap: 0.2rem; }
+.theory-title { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; font-style: italic; color: #3a1858; margin: 0.4rem 0 0.2rem; line-height: 1.3; }
+.theory-text { font-family: 'IM Fell English', serif; font-size: 0.9rem; color: #3a2048; line-height: 1.7; margin: 0 0 0.5rem; font-style: italic; }
+.theory-author { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase; color: #7a5890; }
+.theory-react-row { display: flex; gap: 0.4rem; margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px dashed #f0e4f8; align-items: center; flex-wrap: wrap; }
+.theory-react-btn { background: rgba(240,232,252,0.6); border: 1px solid #e4d4f0; border-radius: 20px; padding: 0.25rem 0.55rem; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 0.25rem; transition: all 0.15s; }
+.theory-react-btn:hover { background: #e8d8f8; border-color: #c8a8e8; transform: scale(1.05); }
+.theory-react-count { font-family: 'Cinzel', serif; font-size: 0.48rem; color: #5a3890; min-width: 0.6rem; text-align: center; }
+.theory-cat-picker { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.theory-cat-opt { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.6rem; border: 1px solid #e0d0f0; border-radius: 20px; cursor: pointer; color: #b090c0; background: rgba(255,255,255,0.8); transition: all 0.12s; display: flex; align-items: center; gap: 0.2rem; }
+.theory-cat-opt.selected { border-color: #c094c8; color: #7850a0; background: #f0e8fc; }
+.form-panel { background: rgba(248,240,252,0.9); border: 1px solid #e0d0f0; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1rem; }
+.form-title { font-family: 'Cinzel', serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #5a3890; margin: 0 0 0.8rem; }
+.f-group { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.6rem; }
+.f-label { font-family: 'Cinzel', serif; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #6a4890; }
+.f-input { background: rgba(255,255,255,0.9); border: 1px solid #e0d0f0; color: #3a2838; font-family: 'IM Fell English', serif; font-size: 1.05rem; padding: 0.5rem 0.7rem; outline: none; border-radius: 8px; width: 100%; transition: border-color 0.15s; }
+.f-input:focus { border-color: #c094c8; }
+.f-input::placeholder { color: #d8c8e0; }
+.f-select { background: rgba(255,255,255,0.9); border: 1px solid #e0d0f0; color: #5a4068; font-family: 'Cinzel', serif; font-size: 0.6rem; padding: 0.5rem 0.7rem; outline: none; border-radius: 8px; width: 100%; cursor: pointer; }
+.f-row { display: grid; grid-template-columns: 1fr 2fr; gap: 0.6rem; }
+.f-actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+.btn-primary { font-family: 'Cinzel', serif; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; background: linear-gradient(135deg, #b078d0, #9878c8); border: none; padding: 0.5rem 1.2rem; cursor: pointer; border-radius: 20px; transition: all 0.15s; box-shadow: 0 2px 10px rgba(160,120,200,0.25); }
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.35; transform: none; }
+.btn-secondary { font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #b090c0; background: rgba(240,232,252,0.8); border: 1px solid #e0d0f0; padding: 0.5rem 1rem; cursor: pointer; border-radius: 20px; transition: all 0.15s; }
+.btn-secondary:hover { background: #ece0f8; }
+.btn-add { font-family: 'Cinzel', serif; font-size: 0.52rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #9070b0; background: rgba(240,232,252,0.7); border: 1px dashed #c8a8e8; padding: 0.5rem 1rem; cursor: pointer; border-radius: 20px; transition: all 0.15s; }
+.btn-add:hover { background: rgba(232,216,248,0.9); border-style: solid; }
+.btn-danger { background: none; border: none; color: #d0a8b8; cursor: pointer; font-size: 0.8rem; transition: color 0.15s; padding: 0.1rem; }
+.btn-danger:hover { color: #c06080; }
+.section-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.4rem; }
+.section-title { font-family: 'Cinzel', serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #5a3890; margin: 0; }
+.card-act-edit { font-family: 'Cinzel', serif; font-size: 0.55rem; background: rgba(240,232,252,0.6); border: none; color: #9878b8; cursor: pointer; padding: 0.2rem 0.5rem; border-radius: 4px; transition: all 0.15s; flex-shrink: 0; }
+.card-act-edit:hover { background: #e8d8f8; color: #7850a0; }
+/* ── Rich Editor ── */
+.rich-editor-wrap { border: 1px solid #e0d0f0; border-radius: 8px; overflow: visible; background: rgba(255,255,255,0.9); transition: border-color 0.15s; }
+.rich-editor-wrap:focus-within { border-color: #c094c8; }
+.rich-toolbar { display: none; }
+.rich-tool-btn { font-family: 'Cinzel', serif; font-size: 0.7rem; min-width: 1.8rem; height: 1.8rem; background: rgba(255,255,255,0.8); border: 1px solid #e0d0f0; color: #7850a0; cursor: pointer; border-radius: 4px; transition: all 0.12s; display: flex; align-items: center; justify-content: center; padding: 0 0.3rem; }
+.rich-tool-btn:hover { background: #e8d8f8; border-color: #c094c8; }
+.rich-tool-btn:active { transform: scale(0.92); background: #d8c8f0; }
+.rich-tool-divider { width: 1px; height: 1.2rem; background: #e0d0f0; margin: 0 0.1rem; flex-shrink: 0; }
+.rich-content { padding: 0.6rem 0.8rem; font-family: 'IM Fell English', serif; font-size: 0.95rem; color: #3a2838; line-height: 1.85; outline: none; }
+.rich-content:empty:before { content: attr(data-placeholder); color: #d8c8e0; font-style: italic; pointer-events: none; }
+.rich-content ul { margin: 0.3rem 0 0.3rem 1.2rem; padding: 0; }
+.rich-content ul ul { margin: 0.15rem 0 0.15rem 1.4rem; }
+.rich-content ul ul ul { margin: 0.1rem 0 0.1rem 1.4rem; }
+.rich-content li { margin-bottom: 0.2rem; }
+.rich-content h1, .rich-content h2, .rich-content h3 { font-weight: 700; line-height: 1.3; }
+.rich-content h1 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.6rem; color: #3a1858; margin: 0.8rem 0 0.4rem; padding-bottom: 0.25rem; border-bottom: 2px solid #d8b8e8; text-shadow: 0 0 16px rgba(148,80,180,0.18); }
+.rich-content h2 { font-family: 'Cinzel', serif; font-size: 1.05rem; letter-spacing: 0.08em; text-transform: uppercase; color: #5a3890; margin: 0.7rem 0 0.35rem; padding-bottom: 0.2rem; border-bottom: 1px solid #e8d8f4; }
+.rich-content h3 { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: #7850a0; margin: 0.6rem 0 0.3rem; }
+.rich-content b, .rich-content strong { color: #5a3878; }
+.rich-content em, .rich-content i { color: #7858a0; }
+.rich-content hr { border: none; border-top: 1px solid #e0d0f0; margin: 0.5rem 0; }
+.narrative ul { margin: 0.3rem 0 0.3rem 1.2rem; padding: 0; }
+.narrative ul ul { margin: 0.15rem 0 0.15rem 1.4rem; }
+.narrative li { margin-bottom: 0.2rem; }
+.narrative b, .narrative strong { color: #5a3878; }
+.narrative em, .narrative i { font-style: italic; color: #7858a0; }
+/* ── NPC location tabs + search + sort ── */
+.npc-loc-tabs { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; margin-bottom: 0.8rem; background: rgba(248,240,252,0.6); border: 1px solid #e8d8f0; border-radius: 10px; padding: 0.2rem; flex-wrap: nowrap; }
+.npc-loc-tabs::-webkit-scrollbar { display: none; }
+.npc-loc-tab { font-family: 'Cinzel', serif; font-size: 0.42rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.4rem 0.7rem; background: none; border: none; cursor: pointer; color: #8a6aaa; white-space: nowrap; border-radius: 7px; transition: all 0.15s; display: flex; align-items: center; gap: 0.25rem; }
+.npc-loc-tab.active { background: rgba(255,255,255,0.95); color: #5a3890; box-shadow: 0 1px 6px rgba(160,120,200,0.15); }
+.npc-loc-tab:hover:not(.active) { color: #5a3890; background: rgba(255,255,255,0.5); }
+.npc-controls-row { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; }
+.npc-search-wrap { position: relative; flex: 1; min-width: 160px; }
+.npc-search-input { width: 100%; background: rgba(255,255,255,0.9); border: 1px solid #e0d0f0; border-radius: 20px; padding: 0.5rem 0.8rem 0.5rem 2rem; font-family: 'IM Fell English', serif; font-size: 0.9rem; color: #3a1858; outline: none; transition: border-color 0.15s; }
+.npc-search-input:focus { border-color: #c094c8; }
+.npc-search-input::placeholder { color: #c0a8d0; font-style: italic; }
+.npc-search-icon { position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); color: #c0a8d0; font-size: 0.85rem; pointer-events: none; }
+.npc-sort-wrap { display: flex; gap: 0; background: rgba(248,240,252,0.6); border: 1px solid #e8d8f0; border-radius: 10px; padding: 0.15rem; flex-shrink: 0; }
+.npc-sort-btn { font-family: 'Cinzel', serif; font-size: 0.4rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.35rem 0.55rem; background: none; border: none; cursor: pointer; color: #8a6aaa; white-space: nowrap; border-radius: 7px; transition: all 0.15s; display: flex; align-items: center; gap: 0.2rem; }
+.npc-sort-btn.active { background: rgba(255,255,255,0.95); color: #5a3890; box-shadow: 0 1px 6px rgba(160,120,200,0.15); }
+.npc-sort-btn:hover:not(.active) { color: #5a3890; background: rgba(255,255,255,0.5); }
+/* ── Inline edit for impressions ── */
+.impression-edit-row { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+.impression-edit-input { flex: 1; background: rgba(255,255,255,0.9); border: 1px solid #c094c8; border-radius: 6px; padding: 0.3rem 0.5rem; font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.85rem; color: #3a1848; outline: none; }
+.btn-tiny { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.5rem; border-radius: 12px; border: 1px solid; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
+.btn-tiny-primary { color: #fff; background: #b078d0; border-color: #b078d0; }
+.btn-tiny-primary:hover { background: #9858c0; }
+.btn-tiny-secondary { color: #b090c0; background: rgba(240,232,252,0.8); border-color: #e0d0f0; }
+.btn-tiny-secondary:hover { background: #ece0f8; }
+/* ── Inline edit for quotes ── */
+.quote-edit-input { width: 100%; background: rgba(255,255,255,0.9); border: 1px solid #c094c8; border-radius: 6px; padding: 0.4rem 0.5rem; font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.92rem; color: #3a1858; outline: none; margin-bottom: 0.4rem; resize: vertical; min-height: 3rem; }
+.gm-note-card { background: radial-gradient(ellipse at 22% 32%, rgba(212,186,144,0.055) 0%, transparent 54%), radial-gradient(ellipse at 78% 68%, rgba(206,180,138,0.045) 0%, transparent 49%), radial-gradient(ellipse at 55% 8%, rgba(215,192,148,0.035) 0%, transparent 43%) rgba(255,248,255,0.9); border: 1px solid #e0d0f0; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 0.7rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 6px rgba(120,80,160,0.07), 0 8px 24px rgba(120,80,160,0.1); }
+.gm-note-card:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px rgba(120,80,160,0.1), 0 10px 30px rgba(120,80,160,0.14); }
+.gm-cat-badge { font-family: 'Cinzel', serif; font-size: 0.38rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.45rem; border-radius: 3px; border: 1px solid; display: inline-flex; align-items: center; gap: 0.2rem; }
+.cat-picker { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.cat-opt { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.6rem; border: 1px solid #e0d0f0; border-radius: 20px; cursor: pointer; color: #b090c0; background: rgba(255,255,255,0.8); transition: all 0.12s; display: flex; align-items: center; gap: 0.2rem; }
+.cat-opt.selected { border-color: #c094c8; color: #7850a0; background: #f0e8fc; }
+/* ── Overlays ── */
+.overlay { position: fixed; inset: 0; background: rgba(60,30,80,0.4); z-index: 50; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+.pin-box { background: #fdf8fc; border: 1px solid #e0d0f0; border-radius: 20px; padding: 2rem; width: 280px; text-align: center; box-shadow: 0 8px 40px rgba(160,120,200,0.2); }
+.pin-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; font-style: italic; color: #7850a0; margin: 0 0 0.4rem; }
+.pin-sub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.82rem; color: #c0a8d0; margin: 0 0 1rem; }
+.pin-input { background: rgba(240,232,252,0.6); border: 1px solid #d8c8e8; border-radius: 10px; color: #3a2838; font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.3em; text-align: center; padding: 0.7rem; outline: none; width: 100%; margin-bottom: 0.8rem; transition: border-color 0.15s; }
+.pin-input:focus { border-color: #b078d0; }
+.pin-input.error { border-color: #d08090; background: rgba(252,240,244,0.8); }
+.pin-error { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.8rem; color: #c06080; margin: 0 0 0.6rem; }
+.pin-actions { display: flex; gap: 0.5rem; justify-content: center; }
+.name-box { background: rgba(248,240,252,0.95); border: 1px solid #e0d0f0; border-radius: 16px; padding: 1.5rem; width: 300px; text-align: center; box-shadow: 0 8px 30px rgba(160,120,200,0.15); }
+.name-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; font-style: italic; color: #7850a0; margin: 0 0 0.3rem; }
+.name-sub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.82rem; color: #c0a8d0; margin: 0 0 1rem; }
+/* ── Fundstücke ── */
+.fund-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.8rem; }
+.fund-card { background: radial-gradient(ellipse at 24% 34%, rgba(212,186,144,0.05) 0%, transparent 52%), radial-gradient(ellipse at 76% 66%, rgba(206,180,138,0.04) 0%, transparent 47%), radial-gradient(ellipse at 50% 6%, rgba(214,190,146,0.03) 0%, transparent 41%) rgba(255,255,255,0.8); border: 1px solid #e8d8f0; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.15s; box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 2px 6px rgba(120,80,160,0.07), 0 8px 22px rgba(120,80,160,0.09); }
+.fund-card:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 4px 10px rgba(120,80,160,0.1), 0 12px 30px rgba(120,80,160,0.14); }
+.fund-card-top { padding: 0.9rem 0.9rem 0.4rem; display: flex; align-items: flex-start; gap: 0.5rem; }
+.fund-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
+.fund-card-name { font-family: 'Cinzel', serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; color: #3a1858; line-height: 1.3; }
+.fund-type-label { font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; color: #7a5890; padding: 0 0.9rem 0.5rem; display: block; }
+.fund-preview { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.78rem; color: #5a4878; padding: 0 0.9rem 0.8rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.fund-detail { background: radial-gradient(ellipse at 18% 28%, rgba(212,186,144,0.06) 0%, transparent 55%), radial-gradient(ellipse at 82% 74%, rgba(206,180,138,0.05) 0%, transparent 50%), radial-gradient(ellipse at 58% 8%, rgba(215,192,148,0.04) 0%, transparent 44%) rgba(255,255,255,0.95); border: 1px solid #e0d0f0; border-radius: 16px; padding: 1.2rem 1.4rem; margin-bottom: 0.8rem; box-shadow: 0 4px 20px rgba(160,120,200,0.1); animation: fadeIn 0.2s ease; }
+.fund-detail-hdr { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.8rem; gap: 0.5rem; }
+.fund-detail-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; font-style: italic; color: #3a1858; margin: 0; }
+.fund-detail-meta { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7a5890; margin-top: 0.2rem; }
+.fund-detail-img { width: 100%; max-height: 220px; object-fit: contain; border-radius: 8px; margin-bottom: 0.8rem; background: #f8f0fc; display: block; }
+.fund-detail-text { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; line-height: 1.9; color: #2a1838; white-space: pre-wrap; }
+.fund-type-picker { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.fund-type-opt { font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.6rem; border: 1px solid #e0d0f0; border-radius: 20px; cursor: pointer; color: #b090c0; background: rgba(255,255,255,0.8); transition: all 0.12s; display: flex; align-items: center; gap: 0.3rem; }
+.fund-type-opt.selected { border-color: #c094c8; color: #7850a0; background: #f0e8fc; }
+.empty { text-align: center; padding: 3rem 1.5rem; font-family: 'IM Fell English', serif; font-style: italic; color: #8a68a8; font-size: 1rem; line-height: 1.8; }
+/* ── Parchment texture — applied after all card rules so background-image overrides the shorthand ── */
+.card, .npc-card, .npc-detail, .quest-card, .quote-card, .snippet-card, .pnote-card, .theory-card, .gm-note-card, .fund-card, .fund-detail, .dossier-card, .world-card, .tarot-reading-card { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"), radial-gradient(ellipse at 22% 35%, rgba(210,182,140,0.13) 0%, transparent 55%), radial-gradient(ellipse at 78% 65%, rgba(205,178,132,0.11) 0%, transparent 50%), radial-gradient(ellipse at 55% 8%, rgba(213,188,145,0.09) 0%, transparent 42%); }
+/* ── GM Plan Sub-tabs ── */
+.gm-sub-tabs { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; margin-bottom: 1.2rem; background: rgba(248,240,252,0.6); border: 1px solid #e8d8f0; border-radius: 10px; padding: 0.2rem; }
+.gm-sub-tabs::-webkit-scrollbar { display: none; }
+.gm-sub-tab { font-family: 'Cinzel', serif; font-size: 0.45rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 0.8rem; background: none; border: none; cursor: pointer; color: #8a6aaa; white-space: nowrap; border-radius: 7px; transition: all 0.15s; display: flex; align-items: center; gap: 0.3rem; flex: 1; justify-content: center; }
+.gm-sub-tab.active { background: rgba(255,255,255,0.95); color: #5a3890; box-shadow: 0 1px 6px rgba(160,120,200,0.15); }
+.gm-sub-tab:hover:not(.active) { color: #5a3890; background: rgba(255,255,255,0.5); }
+.gm-sub-count { font-size: 0.38rem; opacity: 0.6; }
+/* ── PC Dossiers ── */
+.dossier-card { background: radial-gradient(ellipse at 20% 30%, rgba(212,186,144,0.055) 0%, transparent 54%), radial-gradient(ellipse at 80% 72%, rgba(206,180,138,0.045) 0%, transparent 49%), radial-gradient(ellipse at 56% 7%, rgba(215,192,148,0.035) 0%, transparent 43%) rgba(255,248,255,0.92); border: 1px solid #e0d0f0; border-radius: 14px; padding: 0; margin-bottom: 0.8rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 6px rgba(120,80,160,0.07), 0 8px 24px rgba(120,80,160,0.1), 0 18px 40px rgba(120,80,160,0.05); overflow: hidden; transition: box-shadow 0.15s; }
+.dossier-card:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px rgba(120,80,160,0.1), 0 10px 30px rgba(120,80,160,0.14), 0 22px 50px rgba(120,80,160,0.06); }
+.dossier-header { display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1rem; cursor: pointer; }
+.dossier-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #f0e8f8, #e8eef8); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #d0c0e0; flex-shrink: 0; overflow: hidden; border: 2px solid #e8d8f0; }
+.dossier-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dossier-pc-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: #3a1858; margin: 0; }
+.dossier-body { border-top: 1px solid #f0e4f8; }
+.dossier-section-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1rem; background: none; border: none; border-bottom: 1px solid #f8f0fc; cursor: pointer; transition: background 0.12s; }
+.dossier-section-btn:hover { background: rgba(240,232,252,0.5); }
+.dossier-section-btn:last-child { border-bottom: none; }
+.dossier-section-label { font-family: 'Cinzel', serif; font-size: 0.5rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; display: flex; align-items: center; gap: 0.3rem; }
+.dossier-section-chevron { color: #d8c8e8; font-size: 0.6rem; transition: transform 0.2s; }
+.dossier-section-chevron.open { transform: rotate(180deg); }
+.dossier-section-content { padding: 0.6rem 1rem 0.8rem; border-bottom: 1px solid #f8f0fc; }
+/* ── Pakte & Versprechen ── */
+.pakt-vis-check { display: flex; align-items: center; gap: 0.4rem; font-family: 'Cinzel', serif; font-size: 0.55rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #6a4890; cursor: pointer; margin: 0.2rem 0 0.4rem; }
+.pakt-vis-check input { width: 15px; height: 15px; accent-color: #b078d0; cursor: pointer; }
+.pakt-filter-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.6rem; }
+.pakt-filter-btn { font-family: 'Cinzel', serif; font-size: 0.42rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.35rem 0.6rem; background: rgba(255,255,255,0.6); border: 1px solid #e8d8f0; cursor: pointer; color: #8a6aaa; white-space: nowrap; border-radius: 14px; transition: all 0.15s; }
+.pakt-filter-btn:hover { background: rgba(255,255,255,0.95); color: #5a3890; }
+.pakt-filter-btn.active { background: rgba(255,255,255,0.98); color: #5a3890; box-shadow: 0 1px 6px rgba(160,120,200,0.15); }
+.pakt-card { position: relative; background: radial-gradient(ellipse at 22% 32%, rgba(212,186,144,0.05) 0%, transparent 53%), radial-gradient(ellipse at 78% 68%, rgba(206,180,138,0.04) 0%, transparent 47%) rgba(255,255,255,0.82); border: 1px solid #e8d8f0; border-left: 3px solid #b078d0; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 0.7rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.88), 0 2px 6px rgba(120,80,160,0.06), 0 6px 18px rgba(120,80,160,0.08); transition: opacity 0.2s; }
+.pakt-card.faded { opacity: 0.62; }
+.pakt-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
+.pakt-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
+.pakt-status-badge { background: none; cursor: pointer; font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.4rem; border-radius: 3px; transition: all 0.12s; }
+.pakt-status-badge:hover { filter: brightness(0.92); transform: translateY(-1px); }
+.pakt-eye { font-size: 0.7rem; opacity: 0.8; }
+.pakt-card-actions { display: flex; gap: 0.3rem; align-items: center; flex-shrink: 0; }
+.pakt-title { font-family: 'Playfair Display', serif; font-size: 1.08rem; font-weight: 700; font-style: italic; color: #3a1858; margin: 0 0 0.15rem; }
+.pakt-parteien { font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9070b0; margin: 0 0 0.5rem; }
+.pakt-wortlaut { position: relative; background: linear-gradient(160deg, rgba(250,244,232,0.85) 0%, rgba(246,238,250,0.8) 100%); border: 1px solid #e6d6c0; border-left: 3px solid #c8a878; border-radius: 0 8px 8px 0; padding: 0.7rem 1rem 0.7rem 1.6rem; margin: 0.3rem 0 0.6rem; box-shadow: inset 0 1px 2px rgba(200,170,120,0.12); }
+.pakt-wortlaut-mark { position: absolute; top: 0.15rem; left: 0.4rem; font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #cdb488; opacity: 0.85; line-height: 1; }
+.pakt-wortlaut .narrative { color: #4a3218; }
+.pakt-bedingungen { background: rgba(70,30,110,0.05); border: 1px solid #e0cef4; border-left: 3px solid #c094c8; border-radius: 0 8px 8px 0; padding: 0.6rem 0.9rem; margin: 0 0 0.6rem; }
+.pakt-bedingungen-label { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.12em; text-transform: uppercase; color: #c094c8; margin: 0 0 0.35rem; }
+.pakt-meta { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase; color: #b0a0c0; margin: 0.2rem 0 0; }
+/* ── World Entries ── */
+.world-card { background: radial-gradient(ellipse at 22% 32%, rgba(212,186,144,0.05) 0%, transparent 53%), radial-gradient(ellipse at 78% 68%, rgba(206,180,138,0.04) 0%, transparent 47%), radial-gradient(ellipse at 54% 6%, rgba(214,190,146,0.03) 0%, transparent 42%) rgba(255,255,255,0.8); border: 1px solid #e8d8f0; border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 0.6rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.88), 0 2px 6px rgba(120,80,160,0.06), 0 6px 18px rgba(120,80,160,0.08); cursor: pointer; transition: all 0.15s; }
+.world-card:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.88), 0 3px 8px rgba(120,80,160,0.09), 0 10px 26px rgba(120,80,160,0.12); transform: translateY(-1px); }
+.world-type-badge { font-family: 'Cinzel', serif; font-size: 0.38rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.12rem 0.4rem; border-radius: 3px; border: 1px solid; display: inline-flex; align-items: center; gap: 0.2rem; }
+.world-detail { background: rgba(255,255,255,0.95); border: 1px solid #e0d0f0; border-radius: 14px; padding: 1.2rem; margin-bottom: 0.8rem; box-shadow: 0 4px 20px rgba(160,120,200,0.1); animation: fadeIn 0.2s ease; }
+.world-filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.world-filter-btn { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.6rem; border: 1px solid #e0d0f0; border-radius: 20px; cursor: pointer; color: #b090c0; background: rgba(255,255,255,0.8); transition: all 0.12s; display: flex; align-items: center; gap: 0.2rem; }
+.world-filter-btn.active { border-color: #c094c8; color: #7850a0; background: #f0e8fc; }
+/* ── Quick Notes ── */
+.qn-card { display: flex; align-items: flex-start; gap: 0.6rem; background: rgba(255,255,255,0.7); border: 1px solid #e0d4ec; border-radius: 10px; padding: 0.7rem 0.9rem; margin-bottom: 0.4rem; transition: all 0.15s; }
+.qn-card.done { opacity: 0.5; }
+.qn-card.done .qn-text { text-decoration: line-through; }
+.qn-checkbox { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #d8c8e8; background: rgba(255,255,255,0.9); cursor: pointer; flex-shrink: 0; margin-top: 0.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 0.65rem; color: transparent; }
+.qn-checkbox:hover { border-color: #b078d0; }
+.qn-checkbox.checked { background: linear-gradient(135deg, #b078d0, #9878c8); border-color: #b078d0; color: #fff; }
+.qn-text { font-size: 0.9rem; color: #3a2048; line-height: 1.5; flex: 1; }
+.qn-tag { font-family: 'Cinzel', serif; font-size: 0.38rem; letter-spacing: 0.1em; text-transform: uppercase; color: #b090c0; background: rgba(240,232,252,0.6); border: 1px solid #e8d8f0; padding: 0.1rem 0.35rem; border-radius: 10px; white-space: nowrap; }
+.qn-date { font-family: 'Cinzel', serif; font-size: 0.38rem; letter-spacing: 0.1em; color: #c0a8d0; }
+.qn-input-row { display: flex; gap: 0.5rem; align-items: flex-start; }
+.qn-input-row .f-input { flex: 1; }
+.divider { border: none; border-top: 1px solid #f0e4f8; margin: 0.8rem 0; }
+.tag { font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.4rem; border-radius: 3px; border: 1px solid; display: inline-block; }
+/* ── Tarot ── */
+.tarot-reading-card { background: radial-gradient(ellipse at 20% 30%, rgba(212,186,144,0.06) 0%, transparent 55%), radial-gradient(ellipse at 80% 72%, rgba(206,180,138,0.05) 0%, transparent 50%), radial-gradient(ellipse at 58% 8%, rgba(215,192,148,0.04) 0%, transparent 45%) rgba(255,255,255,0.92); border: 1px solid #d0b8e8; border-radius: 14px; margin-bottom: 0.9rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px rgba(80,40,140,0.09), 0 10px 28px rgba(80,40,140,0.1), 0 20px 48px rgba(80,40,140,0.05); overflow: hidden; animation: fadeIn 0.2s ease; transition: box-shadow 0.15s; }
+.tarot-reading-card:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 10px rgba(80,40,140,0.12), 0 12px 34px rgba(80,40,140,0.15), 0 24px 56px rgba(80,40,140,0.06); }
+.tarot-card-hdr { background: linear-gradient(135deg, #2a1640 0%, #3a1e58 55%, #462470 100%); padding: 0.9rem 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.tarot-card-hdr-left { flex: 1; min-width: 0; }
+.tarot-card-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; font-style: italic; color: #f0e4ff; margin: 0 0 0.25rem; line-height: 1.3; }
+.tarot-card-meta { font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.12em; text-transform: uppercase; color: #b890d8; }
+.tarot-chevron { color: rgba(240,228,255,0.4); font-size: 0.7rem; flex-shrink: 0; transition: transform 0.2s; }
+.tarot-chevron.open { transform: rotate(180deg); }
+.tarot-card-body { padding: 1rem 1.1rem; }
+.tarot-chips-label { font-family: 'Cinzel', serif; font-size: 0.44rem; letter-spacing: 0.14em; text-transform: uppercase; color: #9070b0; margin: 0 0 0.55rem; }
+.tarot-chips-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.tarot-chip { background: linear-gradient(160deg, #f6eeff 0%, #ece8f8 100%); border: 1px solid #cdb8e4; border-radius: 8px; padding: 0.45rem 0.75rem; text-align: center; min-width: 82px; box-shadow: 0 1px 6px rgba(100,60,160,0.08); }
+.tarot-chip-pos { font-family: 'Cinzel', serif; font-size: 0.37rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9070b0; margin: 0 0 0.2rem; }
+.tarot-chip-name { font-family: 'Playfair Display', serif; font-size: 0.82rem; color: #2e1650; margin: 0; font-weight: 700; }
+.tarot-chip-name.reversed { color: #b85070; font-style: italic; }
+.tarot-gm-box { background: rgba(70,30,110,0.05); border: 1px solid #e0cef4; border-left: 3px solid #c094c8; border-radius: 0 8px 8px 0; padding: 0.8rem 1rem; margin-top: 0.9rem; }
+.tarot-gm-label { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.12em; text-transform: uppercase; color: #c094c8; margin: 0 0 0.4rem; }
+.spread-card { background: rgba(255,255,255,0.88); border: 1px solid #ddd0f0; border-radius: 12px; margin-bottom: 0.6rem; overflow: hidden; box-shadow: 0 2px 10px rgba(100,60,160,0.07); transition: all 0.15s; }
+.spread-card:hover { box-shadow: 0 4px 16px rgba(100,60,160,0.12); }
+.spread-card-hdr { display: flex; align-items: center; gap: 0.6rem; padding: 0.8rem 1rem; cursor: pointer; }
+.spread-card-info { flex: 1; min-width: 0; }
+.spread-card-name { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; color: #3a1858; margin: 0 0 0.1rem; }
+.spread-card-meta { font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; color: #8a68a8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spread-pub-badge { font-family: 'Cinzel', serif; font-size: 0.38rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 20px; flex-shrink: 0; white-space: nowrap; }
+.spread-pub-badge.public { background: rgba(88,136,176,0.1); color: #4a78b0; border: 1px solid rgba(88,136,176,0.3); }
+.spread-pub-badge.private { background: rgba(180,160,210,0.12); color: #9a88b8; border: 1px solid rgba(180,160,210,0.35); }
+.spread-card-body { padding: 0.2rem 1rem 0.9rem; border-top: 1px solid #f0e6f8; }
+.spread-positions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.5rem; margin: 0.6rem 0; }
+.spread-pos-item { background: linear-gradient(135deg, #f9f2fe, #f2eef8); border: 1px solid #e2d2f0; border-radius: 8px; padding: 0.55rem 0.75rem; }
+.spread-pos-num { font-family: 'Cinzel', serif; font-size: 0.37rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c094c8; margin: 0 0 0.15rem; }
+.spread-pos-name { font-family: 'Playfair Display', serif; font-size: 0.85rem; font-weight: 700; color: #3a1858; margin: 0 0 0.15rem; }
+.spread-pos-meaning { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.78rem; color: #6a5080; line-height: 1.5; margin: 0; }
+.pub-spreads-section { margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1px solid #ede0f8; }
+.pub-spreads-title { font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 0.16em; text-transform: uppercase; color: #9070b0; margin: 0 0 0.8rem; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Haus floor plan ── */
+.floorplan-wrap { background: radial-gradient(ellipse at 30% 20%, rgba(212,186,144,0.06) 0%, transparent 55%) rgba(255,255,255,0.55); border: 1px solid #e0d0f0; border-radius: 14px; padding: 0.9rem; margin-bottom: 1rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 16px rgba(120,80,160,0.08); }
+.floorplan { width: 100%; height: auto; display: block; }
+.fp-room { cursor: pointer; }
+.fp-room .fp-rect { transition: fill 0.15s, stroke 0.15s; }
+.fp-room:hover .fp-rect { fill: #f3e8fc; }
+.fp-room.selected .fp-rect { stroke: #7850a0; stroke-width: 3.5; }
+.fp-icon { font-size: 20px; }
+.fp-name { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 0.03em; fill: #3a1858; }
+.fp-status { font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; fill: #9070b0; }
+.fp-anbau-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.fp-legend { display: flex; gap: 0.9rem; flex-wrap: wrap; justify-content: center; margin-top: 0.6rem; }
+.fp-legend span { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 0.08em; text-transform: uppercase; color: #8a6aaa; display: flex; align-items: center; gap: 0.3rem; }
+.fp-legend i { width: 12px; height: 12px; border-radius: 3px; border: 1px solid #c8a8e8; display: inline-block; }
+
+/* ── Room moodboard ── */
+.moodboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 0.5rem; margin: 0.4rem 0 0.7rem; }
+.mb-thumb { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid #e0d0f0; cursor: pointer; background: linear-gradient(135deg, #f0e8f8, #e8eef8); }
+.mb-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.2s; }
+.mb-thumb:hover img { transform: scale(1.06); }
+.mb-cap { position: absolute; left: 0; right: 0; bottom: 0; font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.68rem; color: #fff; padding: 0.5rem 0.4rem 0.25rem; background: linear-gradient(transparent, rgba(48,24,72,0.75)); line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-del { position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border: none; border-radius: 50%; background: rgba(60,30,80,0.55); color: #fff; font-size: 0.6rem; line-height: 1; cursor: pointer; opacity: 0; transition: opacity 0.15s; display: flex; align-items: center; justify-content: center; }
+.mb-thumb:hover .mb-del { opacity: 1; }
+.mb-del:hover { background: #c06080; }
+.mb-lightbox-img { max-width: 92vw; max-height: 85vh; border-radius: 10px; box-shadow: 0 10px 50px rgba(40,20,70,0.5); display: block; margin: 0 auto; }
+.mb-lightbox-cap { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.95rem; color: #f0e4ff; margin: 0.8rem auto 0; max-width: 80vw; text-align: center; }
+
+/* ── Library book collection ── */
+.book-list { display: flex; flex-direction: column; gap: 0.4rem; margin: 0.4rem 0 0.7rem; }
+.book-row { display: flex; align-items: flex-start; gap: 0.55rem; background: linear-gradient(160deg, rgba(250,244,232,0.75) 0%, rgba(246,238,250,0.7) 100%); border: 1px solid #e6d6c0; border-left: 3px solid #c8a878; border-radius: 0 8px 8px 0; padding: 0.55rem 0.75rem; }
+.book-spine { font-size: 1rem; line-height: 1.3; flex-shrink: 0; }
+.book-info { flex: 1; min-width: 0; }
+.book-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.95rem; color: #3a1858; margin: 0; line-height: 1.3; }
+.book-author { font-family: 'IM Fell English', serif; font-style: italic; font-size: 0.8rem; color: #6a4888; margin: 0.1rem 0 0; }
+.book-notes { font-family: 'IM Fell English', serif; font-size: 0.82rem; color: #4a3060; line-height: 1.5; margin: 0.3rem 0 0; }
+.book-meta { font-family: 'Cinzel', serif; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; color: #b0a0c0; margin: 0.3rem 0 0; }
+.book-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; flex-shrink: 0; }
+.book-read { font-family: 'Cinzel', serif; font-size: 0.4rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 12px; cursor: pointer; border: 1px solid; white-space: nowrap; transition: all 0.12s; }
+.book-read.read { color: #5a8a68; border-color: #a8d0b0; background: rgba(90,138,104,0.1); }
+.book-read.unread { color: #b0a0c0; border-color: #e0d0e8; background: rgba(255,255,255,0.6); }
+.book-read:hover { filter: brightness(0.96); }
+
+/* ── Campaign moodboard gallery ── */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.7rem; }
+.gallery-grid .mb-thumb { border-radius: 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 2px 8px rgba(120,80,160,0.1); }
+.gallery-grid .mb-cap { font-size: 0.75rem; padding: 0.7rem 0.5rem 0.35rem; white-space: normal; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; }
+
+/* ── Mobile legibility (phones only; tablet/laptop/desktop unchanged) ── */
+@media (max-width: 640px) {
+  /* rem-scale bump enlarges every rem-based size at once, including the many
+     tiny inline Cinzel labels, without touching the desktop layout. */
+  html { font-size: 18px; }
+  .page { padding: 1rem 0.85rem 7rem; }
+  .f-row { grid-template-columns: 1fr; }
+  .tab-btn { font-size: 0.6rem; padding: 0.6rem 0.75rem; }
+  .tab-icon { font-size: 0.95rem; }
+  .campaign-name { font-size: 1.2rem; }
+  /* long letter-spacing hurts legibility at small sizes — tighten it on phones */
+  .card-meta, .quote-speaker, .snippet-author, .snippet-meta, .pnote-author, .pnote-date,
+  .theory-author, .quest-by, .fund-type-label, .fund-detail-meta, .book-meta, .npc-card-name,
+  .impression-author, .gm-badge, .player-chip, .section-title, .form-title, .f-label {
+    letter-spacing: 0.05em;
+  }
+  .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+@media (max-width: 400px) {
+  html { font-size: 19px; }
+}
