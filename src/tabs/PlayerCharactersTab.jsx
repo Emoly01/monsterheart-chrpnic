@@ -3,36 +3,41 @@ import RichEditor from "../RichEditor.jsx";
 import { makeId, formatDate } from "../constants.js";
 
 const emptyNpcDraft = { name: "", image: "", description: "" };
+const blankForm = () => ({ name: "", player: "", concept: "", image: "", backstory: "", npcs: [] });
 
 // Player Character roster. Players (once they've set a name) can add their own
-// character with a backstory and a list of important NPCs; the author or the GM
-// can edit or delete it. Everyone can read.
+// character — including a backstory and a list of important NPCs, all in one
+// form. The author or the GM can edit or delete it. Everyone can read.
 export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs, upc }) {
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: "", player: "", concept: "", image: "", backstory: "" });
+  const [form, setForm] = useState(blankForm());
   const [expanded, setExpanded] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  // Per-character "important NPC" draft + which NPC (if any) is being edited.
-  const [npcDraft, setNpcDraft] = useState({});
+  // NPC being composed inside the character form.
+  const [npcDraft, setNpcDraft] = useState(emptyNpcDraft);
   const [editingNpc, setEditingNpc] = useState(null);
 
   const canWrite = gmMode || !!playerName;
   const canEdit = (pc) => gmMode || (pc.owner && pc.owner === playerName);
 
-  const blank = () => setForm({ name: "", player: "", concept: "", image: "", backstory: "" });
+  const resetForm = () => { setForm(blankForm()); setNpcDraft(emptyNpcDraft); setEditingNpc(null); };
 
   const startAdd = () => {
     if (!canWrite) { needName(); return; }
     setEditingId(null);
-    setForm({ name: "", player: playerName || "", concept: "", image: "", backstory: "" });
+    setForm({ ...blankForm(), player: playerName || "" });
+    setNpcDraft(emptyNpcDraft); setEditingNpc(null);
     setShowForm(true);
   };
 
   const startEdit = (pc) => {
     setEditingId(pc.id);
-    setForm({ name: pc.name || "", player: pc.player || "", concept: pc.concept || "", image: pc.image || "", backstory: pc.backstory || "" });
+    setForm({ name: pc.name || "", player: pc.player || "", concept: pc.concept || "", image: pc.image || "", backstory: pc.backstory || "", npcs: pc.npcs || [] });
+    setNpcDraft(emptyNpcDraft); setEditingNpc(null);
     setShowForm(true);
   };
+
+  const closeForm = () => { setShowForm(false); setEditingId(null); resetForm(); };
 
   const save = () => {
     if (!form.name.trim()) return;
@@ -42,15 +47,14 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
       concept: form.concept.trim(),
       image: form.image.trim(),
       backstory: form.backstory,
+      npcs: form.npcs,
     };
     if (editingId) {
       upc(pcs.map(p => p.id === editingId ? { ...p, ...data } : p));
     } else {
-      upc([...pcs, { id: makeId(), ...data, npcs: [], owner: playerName || "GM", ts: Date.now() }]);
+      upc([...pcs, { id: makeId(), ...data, owner: playerName || "GM", ts: Date.now() }]);
     }
-    blank();
-    setShowForm(false);
-    setEditingId(null);
+    closeForm();
   };
 
   const remove = (pc) => {
@@ -60,38 +64,23 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
     }
   };
 
-  // ── Important NPCs (nested per character) ──
-  const getDraft = (pcId) => npcDraft[pcId] || emptyNpcDraft;
-  const setDraft = (pcId, patch) => setNpcDraft(s => ({ ...s, [pcId]: { ...getDraft(pcId), ...patch } }));
-
-  const saveNpc = (pc) => {
-    const d = getDraft(pc.id);
-    if (!d.name.trim()) return;
-    const entry = { name: d.name.trim(), image: d.image.trim(), description: d.description.trim() };
-    const list = pc.npcs || [];
-    const nextNpcs = editingNpc
-      ? list.map(n => n.id === editingNpc ? { ...n, ...entry } : n)
-      : [...list, { id: makeId(), ...entry }];
-    upc(pcs.map(p => p.id === pc.id ? { ...p, npcs: nextNpcs } : p));
-    setNpcDraft(s => ({ ...s, [pc.id]: emptyNpcDraft }));
-    setEditingNpc(null);
+  // ── Important NPCs, composed directly in the character form ──
+  const commitNpc = () => {
+    if (!npcDraft.name.trim()) return;
+    const entry = { name: npcDraft.name.trim(), image: npcDraft.image.trim(), description: npcDraft.description.trim() };
+    setForm(f => ({
+      ...f,
+      npcs: editingNpc
+        ? f.npcs.map(n => n.id === editingNpc ? { ...n, ...entry } : n)
+        : [...f.npcs, { id: makeId(), ...entry }],
+    }));
+    setNpcDraft(emptyNpcDraft); setEditingNpc(null);
   };
-
-  const editNpc = (pc, npc) => {
-    setEditingNpc(npc.id);
-    setDraft(pc.id, { name: npc.name || "", image: npc.image || "", description: npc.description || "" });
-  };
-
-  const cancelNpc = (pcId) => {
-    setNpcDraft(s => ({ ...s, [pcId]: emptyNpcDraft }));
-    setEditingNpc(null);
-  };
-
-  const removeNpc = (pc, npcId) => {
-    if (window.confirm("NPC löschen?")) {
-      upc(pcs.map(p => p.id === pc.id ? { ...p, npcs: (p.npcs || []).filter(n => n.id !== npcId) } : p));
-      if (editingNpc === npcId) cancelNpc(pc.id);
-    }
+  const editDraftNpc = (npc) => { setEditingNpc(npc.id); setNpcDraft({ name: npc.name || "", image: npc.image || "", description: npc.description || "" }); };
+  const cancelDraftNpc = () => { setNpcDraft(emptyNpcDraft); setEditingNpc(null); };
+  const removeDraftNpc = (id) => {
+    setForm(f => ({ ...f, npcs: f.npcs.filter(n => n.id !== id) }));
+    if (editingNpc === id) cancelDraftNpc();
   };
 
   return (
@@ -116,9 +105,50 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
             <input className="f-input" value={form.image} onChange={e => setForm(f => ({ ...f, image: e.target.value }))} placeholder="i.imgur.com/..." /></div>
           <div className="f-group"><label className="f-label">Hintergrundgeschichte</label>
             <RichEditor value={form.backstory} onChange={v => setForm(f => ({ ...f, backstory: v }))} placeholder="Woher kommt dein Charakter? Was hat ihn geprägt? Ziele, Geheimnisse..." rows={5} /></div>
+
+          {/* Important NPCs — added right here while creating the character */}
+          <div className="f-group">
+            <label className="f-label">Wichtige NPCs</label>
+            {form.npcs.length > 0 && (
+              <div className="npc-grid" style={{ marginBottom: "0.7rem" }}>
+                {form.npcs.map(npc => (
+                  <div key={npc.id} className="npc-card" style={{ cursor: "default" }}>
+                    <div className="npc-img">
+                      {npc.image ? <img src={npc.image} alt={npc.name} onError={e => { e.target.style.display = "none"; }} /> : "👤"}
+                    </div>
+                    <div className="npc-card-body">
+                      <p className="npc-card-name">{npc.name}</p>
+                      {npc.description && <p className="npc-card-faction" style={{ whiteSpace: "pre-wrap" }}>{npc.description}</p>}
+                      <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.4rem" }}>
+                        <button type="button" className="card-act-edit" title="Bearbeiten" onClick={() => editDraftNpc(npc)}>✎</button>
+                        <button type="button" className="btn-danger" title="Löschen" onClick={() => removeDraftNpc(npc.id)}>🗑</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="pc-npc-add">
+              <div className="f-row">
+                <div className="f-group"><label className="f-label">Bild-URL (opt.)</label>
+                  <input className="f-input" value={npcDraft.image} onChange={e => setNpcDraft(d => ({ ...d, image: e.target.value }))} placeholder="i.imgur.com/..." /></div>
+                <div className="f-group"><label className="f-label">NPC-Name</label>
+                  <input className="f-input" value={npcDraft.name} onChange={e => setNpcDraft(d => ({ ...d, name: e.target.value }))} placeholder="z.B. Mama Laveaux" /></div>
+              </div>
+              <div className="f-group"><label className="f-label">Beschreibung</label>
+                <textarea className="f-input" rows={2} value={npcDraft.description} onChange={e => setNpcDraft(d => ({ ...d, description: e.target.value }))}
+                  placeholder="Wer ist diese Person für deinen Charakter? Beziehung, Rolle, Wichtiges..." style={{ resize: "vertical", fontFamily: "'IM Fell English', serif" }} /></div>
+              <div className="f-actions">
+                <button type="button" className="btn-add" onClick={commitNpc} disabled={!npcDraft.name.trim()}>{editingNpc ? "NPC speichern" : "+ NPC hinzufügen"}</button>
+                {(editingNpc || npcDraft.name || npcDraft.image || npcDraft.description) &&
+                  <button type="button" className="btn-secondary" onClick={cancelDraftNpc}>Verwerfen</button>}
+              </div>
+            </div>
+          </div>
+
           <div className="f-actions">
-            <button className="btn-primary" onClick={save} disabled={!form.name.trim()}>Speichern</button>
-            <button className="btn-secondary" onClick={() => { setShowForm(false); setEditingId(null); blank(); }}>Abbrechen</button>
+            <button className="btn-primary" onClick={save} disabled={!form.name.trim()}>Charakter speichern</button>
+            <button className="btn-secondary" onClick={closeForm}>Abbrechen</button>
           </div>
         </div>
       )}
@@ -152,7 +182,6 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
         const pc = pcs.find(p => p.id === expanded);
         if (!pc) return null;
         const npcs = pc.npcs || [];
-        const draft = getDraft(pc.id);
         const editable = canEdit(pc);
         return (
           <div className="npc-detail" style={{ marginTop: "0.8rem" }}>
@@ -162,8 +191,8 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
                 {pc.concept && <p className="npc-detail-faction">{pc.concept}</p>}
                 {pc.player && <p className="card-meta">Gespielt von {pc.player}</p>}
               </div>
-              {editable && <button className="card-act-edit" onClick={() => startEdit(pc)}>✎</button>}
-              {editable && <button className="btn-danger" title="Löschen" onClick={() => remove(pc)}>✕</button>}
+              {editable && <button className="card-act-edit" title="Bearbeiten" onClick={() => startEdit(pc)}>✎</button>}
+              {editable && <button className="btn-danger" title="Löschen" onClick={() => remove(pc)}>🗑</button>}
               <button className="btn-danger" title="Schließen" onClick={() => setExpanded(null)}>✕</button>
             </div>
             {pc.image && <img className="npc-detail-img" src={pc.image} alt={pc.name} onError={e => { e.target.style.display = "none"; }} />}
@@ -180,52 +209,23 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
             {/* Important NPCs */}
             <div className="divider" />
             <p className="pc-sub-label">👥 Wichtige NPCs{npcs.length > 0 ? ` · ${npcs.length}` : ""}</p>
-            {npcs.length > 0 && (
-              <div className="npc-grid" style={{ marginBottom: editable ? "0.9rem" : 0 }}>
-                {npcs.map(npc => (
-                  <div key={npc.id} className="npc-card" style={{ cursor: "default" }}>
-                    <div className="npc-img">
-                      {npc.image
-                        ? <img src={npc.image} alt={npc.name} onError={e => { e.target.style.display = "none"; }} />
-                        : "👤"}
+            {npcs.length > 0
+              ? <div className="npc-grid">
+                  {npcs.map(npc => (
+                    <div key={npc.id} className="npc-card" style={{ cursor: "default" }}>
+                      <div className="npc-img">
+                        {npc.image ? <img src={npc.image} alt={npc.name} onError={e => { e.target.style.display = "none"; }} /> : "👤"}
+                      </div>
+                      <div className="npc-card-body">
+                        <p className="npc-card-name">{npc.name}</p>
+                        {npc.description && <p className="npc-card-faction" style={{ whiteSpace: "pre-wrap" }}>{npc.description}</p>}
+                      </div>
                     </div>
-                    <div className="npc-card-body">
-                      <p className="npc-card-name">{npc.name}</p>
-                      {npc.description && <p className="npc-card-faction" style={{ whiteSpace: "pre-wrap" }}>{npc.description}</p>}
-                      {editable && (
-                        <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.4rem" }}>
-                          <button className="btn-tiny btn-tiny-secondary" onClick={() => editNpc(pc, npc)}>Bearbeiten</button>
-                          <button className="btn-tiny btn-tiny-secondary" style={{ color: "#c0392b", borderColor: "#e6c3ba" }} onClick={() => removeNpc(pc, npc.id)}>Löschen</button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            {npcs.length === 0 && !editable && (
-              <p style={{ fontFamily: "'IM Fell English',serif", fontStyle: "italic", color: "#c0ad82", fontSize: "0.9rem", margin: 0 }}>Noch keine NPCs.</p>
-            )}
-
-            {editable && (
-              <div className="form-panel" style={{ marginBottom: 0 }}>
-                <p className="form-title">{editingNpc ? "NPC bearbeiten" : "NPC hinzufügen"}</p>
-                <div className="f-row">
-                  <div className="f-group"><label className="f-label">Bild-URL (opt.)</label>
-                    <input className="f-input" value={draft.image} onChange={e => setDraft(pc.id, { image: e.target.value })} placeholder="i.imgur.com/..." /></div>
-                  <div className="f-group"><label className="f-label">Name</label>
-                    <input className="f-input" value={draft.name} onChange={e => setDraft(pc.id, { name: e.target.value })} placeholder="z.B. Mama Laveaux" /></div>
+                  ))}
                 </div>
-                <div className="f-group"><label className="f-label">Beschreibung</label>
-                  <textarea className="f-input" rows={3} value={draft.description} onChange={e => setDraft(pc.id, { description: e.target.value })}
-                    placeholder="Wer ist diese Person für deinen Charakter? Beziehung, Rolle, Wichtiges..." style={{ resize: "vertical", fontFamily: "'IM Fell English', serif" }} /></div>
-                <div className="f-actions">
-                  <button className="btn-primary" onClick={() => saveNpc(pc)} disabled={!draft.name.trim()}>{editingNpc ? "Speichern" : "+ NPC"}</button>
-                  {(editingNpc || draft.name || draft.image || draft.description) &&
-                    <button className="btn-secondary" onClick={() => cancelNpc(pc.id)}>Abbrechen</button>}
-                </div>
-              </div>
-            )}
+              : <p style={{ fontFamily: "'IM Fell English',serif", fontStyle: "italic", color: "#c0ad82", fontSize: "0.9rem", margin: 0 }}>
+                  Noch keine NPCs.{editable ? " Tippe auf ✎ oben, um welche hinzuzufügen." : ""}
+                </p>}
 
             <p className="card-meta" style={{ marginTop: "0.8rem" }}>Angelegt {formatDate(pc.ts)}</p>
           </div>
