@@ -18,29 +18,29 @@ export default function WitchlightChronik() {
   const [showPin, setShowPin] = useState(false);
   const [pinInput, setPinInput] = useState("");
   const [pinError, setPinError] = useState(false);
-  const [playerName, setPlayerName] = useState(() => { try { return localStorage.getItem("wtm-player-name") || ""; } catch { return ""; } });
+  const [playerName, setPlayerName] = useState(() => { try { return localStorage.getItem("td-player-name") || ""; } catch { return ""; } });
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [nameInput, setNameInput] = useState("");
 
   // ── Live-synced shared data (one Firestore doc per item, see sync.js) ──
-  const [recaps, ur, recapsReady] = useSyncedList("wtm-s-recaps");
-  const [quotes, uqt, quotesReady] = useSyncedList("wtm-s-quotes");
-  const [snippets, usn, snippetsReady] = useSyncedList("wtm-s-snippets");
-  const [npcs, un, npcsReady] = useSyncedList("wtm-s-npcs");
-  const [pcs, upc, pcsReady] = useSyncedList("wtm-s-pcs", { order: "asc" });
-  const [reactions, react, reactionsReady] = useSyncedReactions("wtm-s-reactions");
-  const [gmNotes, ugn, gmNotesReady] = useSyncedList("wtm-s-gmnotes");
-  const [pcDossiers, upd, pcDossiersReady] = useSyncedList("wtm-s-pcdossiers", { order: "asc" });
-  const [worldEntries, uwe, worldEntriesReady] = useSyncedList("wtm-s-worldentries");
-  const [quickNotes, uqn, quickNotesReady] = useSyncedList("wtm-s-quicknotes");
-  const [haus, uh, hausReady] = useSyncedList("wtm-s-haus");
-  const [moodboard, umb, moodboardReady] = useSyncedList("wtm-s-moodboard");
+  const [recaps, ur, recapsReady] = useSyncedList("td-s-recaps");
+  const [quotes, uqt, quotesReady] = useSyncedList("td-s-quotes");
+  const [snippets, usn, snippetsReady] = useSyncedList("td-s-snippets");
+  const [npcs, un, npcsReady] = useSyncedList("td-s-npcs");
+  const [pcs, upc, pcsReady] = useSyncedList("td-s-pcs", { order: "asc" });
+  const [reactions, react, reactionsReady] = useSyncedReactions("td-s-reactions");
+  const [gmNotes, ugn, gmNotesReady] = useSyncedList("td-s-gmnotes");
+  const [pcDossiers, upd, pcDossiersReady] = useSyncedList("td-s-pcdossiers", { order: "asc" });
+  const [worldEntries, uwe, worldEntriesReady] = useSyncedList("td-s-worldentries");
+  const [quickNotes, uqn, quickNotesReady] = useSyncedList("td-s-quicknotes");
+  const [haus, uh, hausReady] = useSyncedList("td-s-haus");
+  const [moodboard, umb, moodboardReady] = useSyncedList("td-s-moodboard");
   const loaded = recapsReady && quotesReady
     && snippetsReady && npcsReady && pcsReady && reactionsReady
     && gmNotesReady && pcDossiersReady && worldEntriesReady
     && quickNotesReady && hausReady && moodboardReady;
 
-  const pin = () => { try { return localStorage.getItem("wtm-gm-pin") || DEFAULT_PIN; } catch { return DEFAULT_PIN; } };
+  const pin = () => { try { return localStorage.getItem("td-gm-pin") || DEFAULT_PIN; } catch { return DEFAULT_PIN; } };
   const tryPin = () => {
     if (pinInput === pin()) { setGmMode(true); setShowPin(false); setPinInput(""); setPinError(false); }
     else { setPinError(true); }
@@ -48,7 +48,7 @@ export default function WitchlightChronik() {
   const saveName = () => {
     if (!nameInput.trim()) return;
     setPlayerName(nameInput.trim());
-    try { localStorage.setItem("wtm-player-name", nameInput.trim()); } catch {}
+    try { localStorage.setItem("td-player-name", nameInput.trim()); } catch {}
     setShowNamePrompt(false); setNameInput("");
   };
   const needName = () => { setShowNamePrompt(true); setNameInput(playerName); };
