@@ -3,7 +3,7 @@ import { makeId } from "./constants.js";
 
 export default function SchnellerfassungBar({ quotes, uqt, quickNotes, uqn }) {
   const [seMode, setSeMode] = useState("zitat"); // "zitat" | "notiz"
-  const [seSitzung, setSeSitzung] = useState(() => { try { return localStorage.getItem("wtm-se-sitzung") || ""; } catch { return ""; } });
+  const [seSitzung, setSeSitzung] = useState(() => { try { return localStorage.getItem("td-se-sitzung") || ""; } catch { return ""; } });
   const [seSpeaker, setSeSpeaker] = useState("");
   const [seText, setSeText] = useState("");
   const seTextRef = useRef(null);
@@ -12,7 +12,7 @@ export default function SchnellerfassungBar({ quotes, uqt, quickNotes, uqn }) {
     if (!seText.trim()) return;
     // Read from localStorage directly so we always have the latest value even if
     // the React state update from the date picker hasn't re-rendered yet.
-    const sitzung = (() => { try { return localStorage.getItem("wtm-se-sitzung") || seSitzung; } catch { return seSitzung; } })();
+    const sitzung = (() => { try { return localStorage.getItem("td-se-sitzung") || seSitzung; } catch { return seSitzung; } })();
     if (seMode === "zitat") {
       uqt([{ id: makeId(), speaker: seSpeaker.trim(), text: seText.trim(), ts: Date.now(), sitzung }, ...quotes]);
     } else {
@@ -31,7 +31,7 @@ export default function SchnellerfassungBar({ quotes, uqt, quickNotes, uqn }) {
           type="date"
           className="se-date-input"
           value={seSitzung}
-          onChange={e => { setSeSitzung(e.target.value); try { localStorage.setItem("wtm-se-sitzung", e.target.value); } catch {} }}
+          onChange={e => { setSeSitzung(e.target.value); try { localStorage.setItem("td-se-sitzung", e.target.value); } catch {} }}
         />
         <div className="se-toggle">
           <button className={`se-toggle-btn${seMode === "zitat" ? " active" : ""}`} onClick={() => setSeMode("zitat")}>Zitat</button>
