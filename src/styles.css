@@ -50,6 +50,9 @@
 .section-hdr { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
 .section-title { font-family: var(--display); font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1; color: var(--ink); margin: 0; display: inline-flex; align-items: center; gap: 0.5rem; }
 .section-title .tab-icon svg { width: 0.85em; height: 0.85em; stroke: var(--gold); }
+.section-head { display: flex; flex-direction: column; }
+.section-head .eyebrow { color: var(--gold); margin-bottom: 12px; }
+.section-sub { font-family: var(--body); font-style: italic; font-size: 1.05rem; color: var(--muted); margin: 12px 0 0; max-width: 560px; line-height: 1.4; }
 
 /* ── Diary (title page) ── */
 .diary-hero { position: relative; padding: 20px 0 30px; overflow: hidden; }
@@ -154,6 +157,34 @@
 /* ── PC sub-sections ── */
 .pc-sub-label { font-family: var(--label); font-size: 0.6rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.7rem; display: flex; align-items: center; gap: 0.35rem; }
 .pc-npc-add { border: 1px dashed var(--line2); border-radius: 12px; padding: 0.9rem 1rem; background: rgba(244,234,214,0.03); }
+/* ── PC cards (match design) ── */
+.pc-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; }
+.pc-card { display: flex; flex-direction: column; overflow: hidden; background: var(--panelgrad); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--cardshadow); transition: border-color 0.15s; }
+.pc-card:hover { border-color: var(--line2); }
+.pc-portrait { position: relative; height: 230px; background: rgba(0,0,0,0.25); border-bottom: 3px solid var(--gold); }
+.pc-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.pc-portrait-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 3.4rem; color: rgba(244,234,214,0.22); }
+.pc-portrait-overlay { position: absolute; left: 0; right: 0; bottom: 0; padding: 44px 24px 16px; background: linear-gradient(0deg, rgba(11,17,14,.92), rgba(11,17,14,.4) 55%, transparent); pointer-events: none; }
+.pc-playbook { font-family: var(--label); font-size: 0.58rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 5px; }
+.pc-name { font-family: var(--display); font-size: 1.85rem; line-height: 1; color: var(--ink); }
+.pc-card-actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; }
+.pc-icon-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: rgba(6,10,8,0.6); color: var(--ink); cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: all 0.15s; }
+.pc-icon-btn:hover { background: rgba(6,10,8,0.85); border-color: var(--line2); }
+.pc-icon-btn.danger:hover { background: var(--red); border-color: var(--red); }
+.pc-card-body { display: flex; flex-direction: column; gap: 18px; padding: 22px 26px 24px; }
+.pc-card-sublabel { font-family: var(--label); font-size: 0.55rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.pc-backstory { font-size: 0.95rem; }
+.pc-empty-note { font-family: var(--body); font-style: italic; font-size: 0.9rem; color: var(--muted); margin: 0; }
+.pc-nsc-block { border-top: 1px solid var(--line); padding-top: 16px; }
+.pc-nsc-list { display: flex; flex-direction: column; gap: 12px; }
+.pc-nsc-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pc-nsc-left { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
+.pc-nsc-avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex: none; border: 1px solid var(--line); background: rgba(0,0,0,0.3); display: grid; place-items: center; font-family: var(--display); font-size: 1rem; color: var(--ink); }
+.pc-nsc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.pc-nsc-name { font-family: var(--body); font-size: 0.95rem; color: var(--ink); }
+.pc-nsc-rel { font-family: var(--label); font-size: 0.56rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: right; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc-card-foot { font-family: var(--label); font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 720px) { .pc-grid { grid-template-columns: 1fr; } }
 
 /* ── Quotes ── */
 .quote-card { padding: 1.6rem 1.6rem 1.4rem; border-top: 3px solid var(--gold); border-radius: 4px 4px 14px 14px; }

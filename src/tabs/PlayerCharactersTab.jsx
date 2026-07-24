@@ -4,6 +4,7 @@ import { makeId, formatDate } from "../constants.js";
 
 const emptyNpcDraft = { name: "", image: "", description: "" };
 const blankForm = () => ({ name: "", player: "", concept: "", image: "", backstory: "", npcs: [] });
+const HUES = ["#ffb400", "#12e0b6", "#ff2b1c"];
 
 // Player Character roster. Players (once they've set a name) can add their own
 // character — including a backstory and a list of important NPCs, all in one
@@ -86,7 +87,11 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
   return (
     <div className="page">
       <div className="section-hdr">
-        <p className="section-title">🎭 Player Character's</p>
+        <div className="section-head">
+          <div className="eyebrow">Kampagne · Iere</div>
+          <h1 className="section-title">Player Character's</h1>
+          <p className="section-sub">Die Runde, die sich auf Iere wagt.</p>
+        </div>
         <button className="btn-add" onClick={startAdd}>+ Charakter</button>
       </div>
 
@@ -160,77 +165,61 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
         </div>
       )}
 
-      <div className="npc-grid">
-        {pcs.map(pc => (
-          <div key={pc.id} className={`npc-card ${expanded === pc.id ? "selected" : ""}`}
-            onClick={() => setExpanded(expanded === pc.id ? null : pc.id)}>
-            <div className="npc-img">
-              {pc.image
-                ? <img src={pc.image} alt={pc.name} onError={e => { e.target.style.display = "none"; }} />
-                : "🎭"}
-            </div>
-            <div className="npc-card-body">
-              <p className="npc-card-name">{pc.name}</p>
-              {pc.concept && <p className="npc-card-faction">{pc.concept}</p>}
-              {pc.player && <p className="card-meta" style={{ marginTop: "0.25rem" }}>✦ {pc.player}</p>}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {expanded && (() => {
-        const pc = pcs.find(p => p.id === expanded);
-        if (!pc) return null;
-        const npcs = pc.npcs || [];
-        const editable = canEdit(pc);
-        return (
-          <div className="npc-detail" style={{ marginTop: "0.8rem" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: "0.7rem", marginBottom: "0.4rem" }}>
-              <div style={{ flex: 1 }}>
-                <p className="npc-detail-name">{pc.name}</p>
-                {pc.concept && <p className="npc-detail-faction">{pc.concept}</p>}
-                {pc.player && <p className="card-meta">Gespielt von {pc.player}</p>}
-              </div>
-              {editable && <button className="card-act-edit" title="Bearbeiten" onClick={() => startEdit(pc)}>✎</button>}
-              {editable && <button className="btn-danger" title="Löschen" onClick={() => remove(pc)}>🗑</button>}
-              <button className="btn-danger" title="Schließen" onClick={() => setExpanded(null)}>✕</button>
-            </div>
-            {pc.image && <img className="npc-detail-img" src={pc.image} alt={pc.name} onError={e => { e.target.style.display = "none"; }} />}
-
-            {/* Backstory */}
-            <div className="divider" />
-            <p className="pc-sub-label">📖 Hintergrundgeschichte</p>
-            {pc.backstory
-              ? <div className="narrative" dangerouslySetInnerHTML={{ __html: pc.backstory }} />
-              : <p style={{ fontFamily: "'Spectral', serif", fontStyle: "italic", color: "#9aa89c", fontSize: "0.9rem", margin: 0 }}>
-                  Noch keine Hintergrundgeschichte.{editable ? " Tippe auf ✎ oben, um sie zu schreiben." : ""}
-                </p>}
-
-            {/* Important NPCs */}
-            <div className="divider" />
-            <p className="pc-sub-label">👥 Wichtige NPCs{npcs.length > 0 ? ` · ${npcs.length}` : ""}</p>
-            {npcs.length > 0
-              ? <div className="npc-grid">
-                  {npcs.map(npc => (
-                    <div key={npc.id} className="npc-card" style={{ cursor: "default" }}>
-                      <div className="npc-img">
-                        {npc.image ? <img src={npc.image} alt={npc.name} onError={e => { e.target.style.display = "none"; }} /> : "👤"}
-                      </div>
-                      <div className="npc-card-body">
-                        <p className="npc-card-name">{npc.name}</p>
-                        {npc.description && <p className="npc-card-faction" style={{ whiteSpace: "pre-wrap" }}>{npc.description}</p>}
-                      </div>
-                    </div>
-                  ))}
+      <div className="pc-grid">
+        {pcs.map((pc, i) => {
+          const hue = HUES[i % HUES.length];
+          const npcs = pc.npcs || [];
+          const editable = canEdit(pc);
+          return (
+            <article key={pc.id} className="pc-card">
+              <div className="pc-portrait" style={{ borderBottomColor: hue }}>
+                {pc.image
+                  ? <img src={pc.image} alt={pc.name} onError={e => { e.target.style.display = "none"; }} />
+                  : <span className="pc-portrait-ph">🎭</span>}
+                <div className="pc-portrait-overlay">
+                  {pc.concept && <div className="pc-playbook" style={{ color: hue }}>{pc.concept}</div>}
+                  <div className="pc-name">{pc.name}</div>
                 </div>
-              : <p style={{ fontFamily: "'Spectral', serif", fontStyle: "italic", color: "#9aa89c", fontSize: "0.9rem", margin: 0 }}>
-                  Noch keine NPCs.{editable ? " Tippe auf ✎ oben, um welche hinzuzufügen." : ""}
-                </p>}
-
-            <p className="card-meta" style={{ marginTop: "0.8rem" }}>Angelegt {formatDate(pc.ts)}</p>
-          </div>
-        );
-      })()}
+                {editable && (
+                  <div className="pc-card-actions">
+                    <button className="pc-icon-btn" title="Bearbeiten" onClick={() => startEdit(pc)}>✎</button>
+                    <button className="pc-icon-btn danger" title="Löschen" onClick={() => remove(pc)}>🗑</button>
+                  </div>
+                )}
+              </div>
+              <div className="pc-card-body">
+                <div>
+                  <div className="pc-card-sublabel">Hintergrund</div>
+                  {pc.backstory
+                    ? <div className="narrative pc-backstory" dangerouslySetInnerHTML={{ __html: pc.backstory }} />
+                    : <p className="pc-empty-note">Noch keine Hintergrundgeschichte.{editable ? " Tippe auf ✎, um sie zu schreiben." : ""}</p>}
+                </div>
+                {npcs.length > 0 && (
+                  <div className="pc-nsc-block">
+                    <div className="pc-card-sublabel">Wichtige NSCs</div>
+                    <div className="pc-nsc-list">
+                      {npcs.map(npc => (
+                        <div key={npc.id} className="pc-nsc-row">
+                          <span className="pc-nsc-left">
+                            <span className="pc-nsc-avatar" style={{ boxShadow: `0 0 0 2px ${hue}33` }}>
+                              {npc.image
+                                ? <img src={npc.image} alt={npc.name} onError={e => { e.target.style.display = "none"; }} />
+                                : (npc.name || "?").charAt(0).toUpperCase()}
+                            </span>
+                            <span className="pc-nsc-name">{npc.name}</span>
+                          </span>
+                          {npc.description && <span className="pc-nsc-rel">{npc.description}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {pc.player && <div className="pc-card-foot">Gespielt von {pc.player} · angelegt {formatDate(pc.ts)}</div>}
+              </div>
+            </article>
+          );
+        })}
+      </div>
     </div>
   );
 }

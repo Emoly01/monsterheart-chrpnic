@@ -25,7 +25,13 @@ export default function MoodboardTab({ gmMode, playerName, needName, moodboard, 
 
   return (
     <div className="page">
-      <div className="section-hdr"><p className="section-title">🖼 Moodboard</p></div>
+      <div className="section-hdr">
+        <div className="section-head">
+          <div className="eyebrow">Kampagne · Iere</div>
+          <h1 className="section-title">Moodboard</h1>
+          <p className="section-sub">Farben, Bilder und Stimmungen der Kampagne.</p>
+        </div>
+      </div>
       <p style={{fontFamily:"'Spectral', serif",fontStyle:"italic",color:"#9aa89c",margin:"0 0 1rem",fontSize:"0.95rem"}}>
         Eine gemeinsame Wand der Inspiration — poste Bilder per Link (z.B. von imgur).
       </p>

@@ -21,7 +21,13 @@ export default function ZitateTab({ gmMode, playerName, quotes, uqt }) {
 
   return (
     <div className="page">
-      <div className="section-hdr"><p className="section-title">❝ Zitate</p></div>
+      <div className="section-hdr">
+        <div className="section-head">
+          <div className="eyebrow">Kampagne · Iere</div>
+          <h1 className="section-title">Zitate</h1>
+          <p className="section-sub">Was am Tisch gesagt wurde und zu gut war, um es zu vergessen.</p>
+        </div>
+      </div>
       <div className="form-panel">
         <p className="form-title">Zitat hinzufügen</p>
         <div className="f-row">

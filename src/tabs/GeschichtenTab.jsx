@@ -23,7 +23,11 @@ export default function GeschichtenTab({ gmMode, playerName, snippets, usn }) {
   return (
     <div className="page">
       <div className="section-hdr">
-        <p className="section-title">🌙 Geschichten</p>
+        <div className="section-head">
+          <div className="eyebrow">Kampagne · Iere</div>
+          <h1 className="section-title">Snippets</h1>
+          <p className="section-sub">Regeln, Orte und lose Notizen — griffbereit für die nächste Sitzung.</p>
+        </div>
         <div style={{display:"flex",gap:"0.4rem",flexWrap:"wrap"}}>
           {playerName && <button className="btn-add" onClick={() => { setShowPlayerSnippetForm(v => !v); setShowSnippetForm(false); }}>+ Deine Geschichte</button>}
           {gmMode && <button className="btn-add" onClick={() => { setShowSnippetForm(v => !v); setShowPlayerSnippetForm(false); }}>+ GM Snippet</button>}
