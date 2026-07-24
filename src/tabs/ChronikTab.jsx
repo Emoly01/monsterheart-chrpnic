@@ -2,7 +2,15 @@ import { useState } from "react";
 import RichEditor from "../RichEditor.jsx";
 import { REACTIONS, makeId, formatDate } from "../constants.js";
 
-export default function ChronikTab({ gmMode, playerName, needName, recaps, ur, reactions, react }) {
+const HUES = ["#ffb400", "#12e0b6", "#ff2b1c"];
+const plainPreview = (html, n = 210) => {
+  const d = document.createElement("div");
+  d.innerHTML = html || "";
+  const t = (d.textContent || "").replace(/\s+/g, " ").trim();
+  return t.length > n ? t.slice(0, n).trimEnd() + "…" : t;
+};
+
+export default function ChronikTab({ gmMode, playerName, needName, recaps, ur, reactions, react, pcs = [], quotes = [] }) {
   const [expanded, setExpanded] = useState({});
   const [recapForm, setRecapForm] = useState({ date: "", title: "", text: "" });
   const [editingRecap, setEditingRecap] = useState(null);
@@ -107,76 +115,143 @@ ${articles}
     URL.revokeObjectURL(url);
   };
 
+  const latestQuote = quotes[0];
+
   return (
     <div className="page">
-      <div className="section-hdr">
-        <p className="section-title">🌊 Chronik</p>
-        <div style={{display:"flex",gap:"0.4rem",flexWrap:"wrap"}}>
-          {recaps.length > 0 && <button className="btn-add" onClick={exportChronik} title="Alle Einträge als HTML-Datei herunterladen">⬇ Export</button>}
-          <button className="btn-primary" onClick={openNewForm}>+ Neuer Eintrag</button>
-        </div>
-      </div>
-      {showRecapForm && (
-        <div className="form-panel">
-          <p className="form-title">{editingRecap ? "Eintrag bearbeiten" : "Neuer Eintrag"}</p>
-          <div className="f-row">
-            <div className="f-group"><label className="f-label">Datum</label>
-              <input className="f-input" type="date" value={recapForm.date} onChange={e => setRecapForm(f => ({...f, date: e.target.value}))} /></div>
-            <div className="f-group"><label className="f-label">Titel</label>
-              <input className="f-input" value={recapForm.title} onChange={e => setRecapForm(f => ({...f, title: e.target.value}))} placeholder="Der vergessene Wald" autoFocus /></div>
+      {/* Hero */}
+      <section className="diary-hero">
+        <div className="diary-hero-glow" />
+        <h1 className="diary-hero-title">Chronik</h1>
+        <p className="diary-hero-sub">Alles, was auf der Insel geschah — Sitzung für Sitzung, festgehalten bevor die Erinnerung im Nebel verschwindet.</p>
+      </section>
+
+      <div className="diary-grid">
+        <main>
+          <div className="diary-main-hdr">
+            <span className="eyebrow">Sitzungen — Neueste zuerst</span>
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+              {recaps.length > 0 && <button className="btn-add" onClick={exportChronik} title="Alle Einträge als HTML-Datei herunterladen">⬇ Export</button>}
+              <button className="btn-primary" onClick={openNewForm}>+ Neuer Eintrag</button>
+            </div>
           </div>
-          <div className="f-group"><label className="f-label">Was ist passiert?</label>
-            <RichEditor value={recapForm.text} onChange={v => setRecapForm(f => ({...f, text: v}))} placeholder="Schreib hier deinen Recap..." rows={6} /></div>
-          <div className="f-actions">
-            <button className="btn-primary" onClick={addRecap} disabled={!recapForm.title.trim() || !recapForm.text.trim()}>{editingRecap ? "Änderungen speichern" : "Speichern"}</button>
-            <button className="btn-secondary" onClick={() => { setShowRecapForm(false); setEditingRecap(null); setRecapForm({ date: "", title: "", text: "" }); }}>Abbrechen</button>
-          </div>
-        </div>
-      )}
-      {recaps.length === 0
-        ? <div className="empty">
-            <div className="empty-emoji">👺🌺</div>
-            <p className="empty-title">Noch keine Sitzungen aufgezeichnet.</p>
-            <p className="empty-sub">Der erste Eintrag wartet auf sein Abenteuer. 🌴</p>
-          </div>
-        : recaps.map(r => {
-          const isOpen = expanded[r.id];
-          const rReacts = reactions[r.id] || {};
-          const hasReacts = Object.values(rReacts).some(v => v > 0);
-          return (
-            <div key={r.id} className="card">
-              <div className="card-header" onClick={() => setExpanded(e => ({...e, [r.id]: !e[r.id]}))}>
-                <span style={{fontFamily:"'Archivo',sans-serif",fontSize:"0.58rem",fontWeight:700,letterSpacing:"0.06em",color:"#ffb400",lineHeight:1.4,paddingTop:"0.15rem",flexShrink:0,textTransform:"uppercase"}}>
-                  {r.date ? new Date(r.date + "T12:00:00").toLocaleDateString("de-DE", {day:"numeric",month:"short",year:"numeric"}) : formatDate(r.ts)}
-                </span>
-                <div className="card-info">
-                  <p className="card-title">{r.title}</p>
-                  {r.author && <p className="card-meta">✍ {r.author}</p>}
-                </div>
-                {canEdit(r) && <button className="btn-danger" onClick={e => { e.stopPropagation(); if(window.confirm("Löschen?")) ur(recaps.filter(x => x.id !== r.id)); }}>✕</button>}
-                {canEdit(r) && <button className="card-act-edit" onClick={e => { e.stopPropagation(); startEditRecap(r); }}>✎</button>}
-                <span className={`card-chevron ${isOpen ? "open" : ""}`}>▼</span>
+
+          {showRecapForm && (
+            <div className="form-panel">
+              <p className="form-title">{editingRecap ? "Eintrag bearbeiten" : "Neuer Eintrag"}</p>
+              <div className="f-row">
+                <div className="f-group"><label className="f-label">Datum</label>
+                  <input className="f-input" type="date" value={recapForm.date} onChange={e => setRecapForm(f => ({...f, date: e.target.value}))} /></div>
+                <div className="f-group"><label className="f-label">Titel</label>
+                  <input className="f-input" value={recapForm.title} onChange={e => setRecapForm(f => ({...f, title: e.target.value}))} placeholder="Der vergessene Wald" autoFocus /></div>
               </div>
-              {isOpen && (
-                <div className="card-body">
-                  <div className="narrative" dangerouslySetInnerHTML={{ __html: r.text }} />
-                  <div className="divider" />
-                  {hasReacts && (
-                    <div className="reactions-row">
-                      {REACTIONS.map(emoji => rReacts[emoji] > 0 && (
-                        <div key={emoji} className="react-btn"><span>{emoji}</span><span className="react-count">{rReacts[emoji]}</span></div>
-                      ))}
+              <div className="f-group"><label className="f-label">Was ist passiert?</label>
+                <RichEditor value={recapForm.text} onChange={v => setRecapForm(f => ({...f, text: v}))} placeholder="Schreib hier deinen Recap..." rows={6} /></div>
+              <div className="f-actions">
+                <button className="btn-primary" onClick={addRecap} disabled={!recapForm.title.trim() || !recapForm.text.trim()}>{editingRecap ? "Änderungen speichern" : "Speichern"}</button>
+                <button className="btn-secondary" onClick={() => { setShowRecapForm(false); setEditingRecap(null); setRecapForm({ date: "", title: "", text: "" }); }}>Abbrechen</button>
+              </div>
+            </div>
+          )}
+
+          {recaps.length === 0 ? (
+            <div className="empty">
+              <div className="empty-emoji">👺🌺</div>
+              <p className="empty-title">Noch keine Sitzungen aufgezeichnet.</p>
+              <p className="empty-sub">Der erste Eintrag wartet auf sein Abenteuer. 🌴</p>
+            </div>
+          ) : (
+            <div className="session-list">
+              {recaps.map((r, i) => {
+                const num = String(recaps.length - i).padStart(2, "0");
+                const hue = HUES[i % HUES.length];
+                const isOpen = expanded[r.id];
+                const rReacts = reactions[r.id] || {};
+                const hasReacts = Object.values(rReacts).some(v => v > 0);
+                const dateLabel = r.date
+                  ? new Date(r.date + "T12:00:00").toLocaleDateString("de-DE", { day: "numeric", month: "short", year: "numeric" })
+                  : formatDate(r.ts);
+                return (
+                  <article key={r.id} className="session-card" style={{ borderLeftColor: hue }}>
+                    <div className="session-num-col">
+                      <div className="eyebrow">Sitzung</div>
+                      <div className="session-num" style={{ color: hue }}>{num}</div>
+                      <div className="session-date">{dateLabel}</div>
                     </div>
-                  )}
-                  <div className="react-add-row">
-                    <span style={{fontFamily:"'Archivo',sans-serif",fontSize:"0.52rem",letterSpacing:"0.12em",textTransform:"uppercase",color:"#9aa89c",alignSelf:"center"}}>Reagieren:</span>
-                    {REACTIONS.map(emoji => <button key={emoji} className="add-react-btn" onClick={() => react(r.id, emoji)}>{emoji}</button>)}
-                  </div>
+                    <div className="session-body">
+                      <div className="session-meta">
+                        <span className="session-dot" style={{ background: hue }} />
+                        <span className="session-who">{r.author ? `✍ ${r.author}` : "Chronik"}</span>
+                        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                          {canEdit(r) && <button className="card-act-edit" title="Bearbeiten" onClick={() => startEditRecap(r)}>✎</button>}
+                          {canEdit(r) && <button className="btn-danger" title="Löschen" onClick={() => { if (window.confirm("Löschen?")) ur(recaps.filter(x => x.id !== r.id)); }}>🗑</button>}
+                          <button className="btn-danger" title={isOpen ? "Einklappen" : "Ausklappen"} onClick={() => setExpanded(e => ({ ...e, [r.id]: !e[r.id] }))}>
+                            <span className={`card-chevron ${isOpen ? "open" : ""}`}>▼</span>
+                          </button>
+                        </div>
+                      </div>
+                      <h3 className="session-title" onClick={() => setExpanded(e => ({ ...e, [r.id]: !e[r.id] }))}>{r.title}</h3>
+                      {!isOpen
+                        ? <p className="session-preview" onClick={() => setExpanded(e => ({ ...e, [r.id]: !e[r.id] }))}>{plainPreview(r.text)}</p>
+                        : (
+                          <>
+                            <div className="narrative" dangerouslySetInnerHTML={{ __html: r.text }} />
+                            <div className="divider" />
+                            {hasReacts && (
+                              <div className="reactions-row">
+                                {REACTIONS.map(emoji => rReacts[emoji] > 0 && (
+                                  <div key={emoji} className="react-btn"><span>{emoji}</span><span className="react-count">{rReacts[emoji]}</span></div>
+                                ))}
+                              </div>
+                            )}
+                            <div className="react-add-row">
+                              <span style={{ fontFamily: "'Archivo',sans-serif", fontSize: "0.52rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#9aa89c", alignSelf: "center" }}>Reagieren:</span>
+                              {REACTIONS.map(emoji => <button key={emoji} className="add-react-btn" onClick={() => react(r.id, emoji)}>{emoji}</button>)}
+                            </div>
+                          </>
+                        )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </main>
+
+        {/* Right rail — the party + latest quote */}
+        <aside className="diary-rail">
+          <div className="rail-card">
+            <div className="rail-title" style={{ color: "#12e0b6" }}>Die Runde</div>
+            {pcs.length === 0
+              ? <p className="rail-empty">Noch keine Charaktere angelegt.</p>
+              : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "13px" }}>
+                  {pcs.map((c, i) => (
+                    <div key={c.id} className="rail-member">
+                      <span className="rail-initial" style={{ color: HUES[i % HUES.length] }}>
+                        {(c.name || "?").charAt(0).toUpperCase()}
+                      </span>
+                      <div>
+                        <div className="rail-member-name">{c.name}</div>
+                        {c.concept && <div className="rail-member-role">{c.concept}</div>}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
-            </div>
-          );
-        })}
+          </div>
+
+          <div className="rail-card rail-quote-card">
+            <div className="rail-title" style={{ color: "#ffb400" }}>Zitat der Woche</div>
+            {latestQuote
+              ? <>
+                  <p className="rail-quote-text">„{latestQuote.text}"</p>
+                  <div className="rail-quote-who">— {latestQuote.speaker}{latestQuote.sitzung ? ` · ${latestQuote.sitzung}` : ""}</div>
+                </>
+              : <p className="rail-empty">Noch keine Zitate gesammelt.</p>}
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
