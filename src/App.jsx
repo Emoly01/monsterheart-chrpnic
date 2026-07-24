@@ -164,7 +164,7 @@ export default function WitchlightChronik() {
 
       {/* Tabs stay mounted while hidden so form drafts survive tab switches. */}
       <div hidden={tab !== "chronik"}>
-        <ChronikTab gmMode={gmMode} playerName={playerName} needName={needName} recaps={recaps} ur={ur} reactions={reactions} react={react} />
+        <ChronikTab gmMode={gmMode} playerName={playerName} needName={needName} recaps={recaps} ur={ur} reactions={reactions} react={react} pcs={pcs} quotes={quotes} />
       </div>
       <div hidden={tab !== "zitate"}>
         <ZitateTab gmMode={gmMode} playerName={playerName} quotes={quotes} uqt={uqt} />

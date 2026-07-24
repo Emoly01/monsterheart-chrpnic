@@ -53,7 +53,11 @@ export default function NpcsTab({ gmMode, playerName, npcs, un }) {
   return (
     <div className="page">
       <div className="section-hdr">
-        <p className="section-title">👥 Gesichter</p>
+        <div className="section-head">
+          <div className="eyebrow">Kampagne · Iere</div>
+          <h1 className="section-title">Gesichter</h1>
+          <p className="section-sub">Die Gesichter der Insel — Verbündete, Rätsel und Gefahren.</p>
+        </div>
         {gmMode && <button className="btn-add" onClick={() => { setShowNpcForm(v => !v); setEditingNpc(null); setNpcForm({name:"",faction:"",description:"",imageUrl:"",status:"lebendig",location:"unbekannt",notes:""}); }}>+ NPC hinzufügen</button>}
       </div>
       {gmMode && showNpcForm && (
