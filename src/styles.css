@@ -55,9 +55,10 @@
 .section-sub { font-family: var(--body); font-style: italic; font-size: 1.05rem; color: var(--muted); margin: 12px 0 0; max-width: 560px; line-height: 1.4; }
 
 /* ── Diary (title page) ── */
-.diary-hero { position: relative; padding: 20px 0 30px; overflow: hidden; }
-.diary-hero-glow { position: absolute; right: -60px; top: -80px; width: 440px; height: 440px; border-radius: 50%; background: radial-gradient(circle at 50% 45%, rgba(255,180,0,.28), rgba(255,43,28,.14) 55%, transparent 72%); pointer-events: none; z-index: 0; }
-.diary-hero-title { font-family: var(--display); font-size: clamp(3rem, 8vw, 4.6rem); line-height: 0.94; letter-spacing: 0.005em; margin: 0; position: relative; }
+.diary-hero { position: relative; padding: 20px 0 30px; overflow: hidden; min-height: 200px; }
+.diary-hero-glow { position: absolute; right: 10px; top: -70px; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle at 50% 45%, rgba(255,180,0,.22), rgba(255,43,28,.12) 55%, transparent 72%); pointer-events: none; z-index: 0; }
+.diary-hero-flower { position: absolute; right: -30px; top: -30px; width: 360px; max-width: 42vw; height: auto; pointer-events: none; z-index: 1; opacity: 0.92; filter: drop-shadow(0 12px 30px rgba(0,0,0,0.5)); }
+.diary-hero-title { font-family: var(--display); font-size: clamp(3rem, 8vw, 4.6rem); line-height: 0.94; letter-spacing: 0.005em; margin: 0; position: relative; z-index: 2; }
 .diary-hero-sub { font-family: var(--body); font-style: italic; font-size: 1.15rem; color: var(--muted); max-width: 520px; margin: 16px 0 0; position: relative; }
 .diary-grid { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 36px; align-items: start; }
 .diary-main-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; flex-wrap: wrap; }
@@ -372,6 +373,7 @@
 /* ── Empty states ── */
 .empty { text-align: center; padding: 3.5rem 1.5rem; font-family: var(--body); font-style: italic; color: var(--muted); font-size: 1rem; line-height: 1.8; }
 .empty-emoji { font-size: 2.2rem; margin-bottom: 0.7rem; letter-spacing: 0.2rem; }
+.empty-flower { width: 120px; height: auto; margin: 0 auto 1rem; display: block; opacity: 0.85; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4)); }
 .empty-title { font-family: var(--display); font-size: 1.7rem; color: var(--ink); margin: 0 0 0.4rem; line-height: 1.2; }
 .empty-sub { font-family: var(--body); font-style: italic; font-size: 0.95rem; color: var(--muted); margin: 0; }
 

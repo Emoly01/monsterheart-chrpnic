@@ -1,6 +1,7 @@
 import { useState } from "react";
 import RichEditor from "../RichEditor.jsx";
 import { REACTIONS, makeId, formatDate } from "../constants.js";
+import flowerGold from "../assets/flower-gold.png";
 
 const HUES = ["#ffb400", "#12e0b6", "#ff2b1c"];
 const plainPreview = (html, n = 210) => {
@@ -122,6 +123,7 @@ ${articles}
       {/* Hero */}
       <section className="diary-hero">
         <div className="diary-hero-glow" />
+        <img className="diary-hero-flower" src={flowerGold} alt="" aria-hidden="true" />
         <h1 className="diary-hero-title">Chronik</h1>
         <p className="diary-hero-sub">Alles, was auf der Insel geschah — Sitzung für Sitzung, festgehalten bevor die Erinnerung im Nebel verschwindet.</p>
       </section>
@@ -156,9 +158,9 @@ ${articles}
 
           {recaps.length === 0 ? (
             <div className="empty">
-              <div className="empty-emoji">👺🌺</div>
+              <img className="empty-flower" src={flowerGold} alt="" aria-hidden="true" />
               <p className="empty-title">Noch keine Sitzungen aufgezeichnet.</p>
-              <p className="empty-sub">Der erste Eintrag wartet auf sein Abenteuer. 🌴</p>
+              <p className="empty-sub">Der erste Eintrag wartet auf sein Abenteuer.</p>
             </div>
           ) : (
             <div className="session-list">
