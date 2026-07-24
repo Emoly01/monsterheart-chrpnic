@@ -137,7 +137,7 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
               </div>
               <div className="f-group"><label className="f-label">Beschreibung</label>
                 <textarea className="f-input" rows={2} value={npcDraft.description} onChange={e => setNpcDraft(d => ({ ...d, description: e.target.value }))}
-                  placeholder="Wer ist diese Person für deinen Charakter? Beziehung, Rolle, Wichtiges..." style={{ resize: "vertical", fontFamily: "'IM Fell English', serif" }} /></div>
+                  placeholder="Wer ist diese Person für deinen Charakter? Beziehung, Rolle, Wichtiges..." style={{ resize: "vertical", fontFamily: "'Spectral', serif" }} /></div>
               <div className="f-actions">
                 <button type="button" className="btn-add" onClick={commitNpc} disabled={!npcDraft.name.trim()}>{editingNpc ? "NPC speichern" : "+ NPC hinzufügen"}</button>
                 {(editingNpc || npcDraft.name || npcDraft.image || npcDraft.description) &&
@@ -202,7 +202,7 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
             <p className="pc-sub-label">📖 Hintergrundgeschichte</p>
             {pc.backstory
               ? <div className="narrative" dangerouslySetInnerHTML={{ __html: pc.backstory }} />
-              : <p style={{ fontFamily: "'IM Fell English',serif", fontStyle: "italic", color: "#c0ad82", fontSize: "0.9rem", margin: 0 }}>
+              : <p style={{ fontFamily: "'Spectral', serif", fontStyle: "italic", color: "#9aa89c", fontSize: "0.9rem", margin: 0 }}>
                   Noch keine Hintergrundgeschichte.{editable ? " Tippe auf ✎ oben, um sie zu schreiben." : ""}
                 </p>}
 
@@ -223,7 +223,7 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
                     </div>
                   ))}
                 </div>
-              : <p style={{ fontFamily: "'IM Fell English',serif", fontStyle: "italic", color: "#c0ad82", fontSize: "0.9rem", margin: 0 }}>
+              : <p style={{ fontFamily: "'Spectral', serif", fontStyle: "italic", color: "#9aa89c", fontSize: "0.9rem", margin: 0 }}>
                   Noch keine NPCs.{editable ? " Tippe auf ✎ oben, um welche hinzuzufügen." : ""}
                 </p>}
 

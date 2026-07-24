@@ -146,7 +146,7 @@ ${articles}
           return (
             <div key={r.id} className="card">
               <div className="card-header" onClick={() => setExpanded(e => ({...e, [r.id]: !e[r.id]}))}>
-                <span style={{fontFamily:"'Cinzel',serif",fontSize:"0.6rem",fontWeight:700,color:"#e2d4b6",lineHeight:1.4,paddingTop:"0.1rem",flexShrink:0}}>
+                <span style={{fontFamily:"'Archivo',sans-serif",fontSize:"0.58rem",fontWeight:700,letterSpacing:"0.06em",color:"#ffb400",lineHeight:1.4,paddingTop:"0.15rem",flexShrink:0,textTransform:"uppercase"}}>
                   {r.date ? new Date(r.date + "T12:00:00").toLocaleDateString("de-DE", {day:"numeric",month:"short",year:"numeric"}) : formatDate(r.ts)}
                 </span>
                 <div className="card-info">
@@ -169,7 +169,7 @@ ${articles}
                     </div>
                   )}
                   <div className="react-add-row">
-                    <span style={{fontFamily:"'Cinzel',serif",fontSize:"0.42rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#9a8258",alignSelf:"center"}}>Reagieren:</span>
+                    <span style={{fontFamily:"'Archivo',sans-serif",fontSize:"0.52rem",letterSpacing:"0.12em",textTransform:"uppercase",color:"#9aa89c",alignSelf:"center"}}>Reagieren:</span>
                     {REACTIONS.map(emoji => <button key={emoji} className="add-react-btn" onClick={() => react(r.id, emoji)}>{emoji}</button>)}
                   </div>
                 </div>

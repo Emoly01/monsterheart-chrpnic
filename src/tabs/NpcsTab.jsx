@@ -100,7 +100,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un }) {
               <button key={l.id} className={`npc-loc-tab ${npcLocation === l.id ? "active" : ""}`}
                 onClick={() => setNpcLocation(l.id)}>
                 <span>{l.icon}</span>{l.label}
-                <span style={{fontFamily:"'Cinzel',serif",fontSize:"0.38rem",opacity:0.7,marginLeft:"0.15rem"}}>({count})</span>
+                <span style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.38rem",opacity:0.7,marginLeft:"0.15rem"}}>({count})</span>
               </button>
             );
           })}
@@ -164,13 +164,13 @@ export default function NpcsTab({ gmMode, playerName, npcs, un }) {
                 </div>
             }
             {n.location && n.location !== "unbekannt" && (
-              <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.45rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#a8842e",marginBottom:"0.4rem"}}>
+              <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.45rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#ffb400",marginBottom:"0.4rem"}}>
                 {NPC_LOCATIONS.find(l=>l.id===n.location)?.icon} {NPC_LOCATIONS.find(l=>l.id===n.location)?.label}
               </p>
             )}
-            {gmMode && n.notes && <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.5rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#d4b878",marginBottom:"0.3rem",marginTop:"0.5rem"}}>GM-Notiz: <span style={{fontFamily:"'IM Fell English',serif",fontStyle:"italic",fontSize:"0.8rem",letterSpacing:0,textTransform:"none",color:"#bd8378"}}>{n.notes}</span></p>}
+            {gmMode && n.notes && <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.5rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#ffb400",marginBottom:"0.3rem",marginTop:"0.5rem"}}>GM-Notiz: <span style={{fontFamily:"'Spectral', serif",fontStyle:"italic",fontSize:"0.8rem",letterSpacing:0,textTransform:"none",color:"#9aa89c"}}>{n.notes}</span></p>}
             <div className="divider" />
-            <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.5rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"#c0ad82",marginBottom:"0.5rem"}}>Spieler-Eindrücke</p>
+            <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.5rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"#9aa89c",marginBottom:"0.5rem"}}>Spieler-Eindrücke</p>
             {(n.impressions||[]).length > 0 && (
               <div className="impression-list" style={{marginBottom:"0.6rem"}}>
                 {n.impressions.map(imp => {
@@ -196,7 +196,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un }) {
                             <div style={{display:"flex",gap:"0.2rem",flexShrink:0,marginTop:"0.05rem"}}>
                               <button className="btn-tiny btn-tiny-secondary" style={{padding:"0.1rem 0.35rem"}}
                                 onClick={() => { setEditingImpression({npcId:n.id,impId:imp.id}); setEditingImpressionText(imp.text); }}>✎</button>
-                              <button className="btn-tiny btn-tiny-secondary" style={{padding:"0.1rem 0.35rem",color:"#c0392b",borderColor:"#e6c3ba"}}
+                              <button className="btn-tiny btn-tiny-secondary" style={{padding:"0.1rem 0.35rem",color:"#ff2b1c",borderColor:"#a83a30"}}
                                 onClick={() => un(npcs.map(x => x.id === n.id ? {...x, impressions:(x.impressions||[]).filter(i => i.id !== imp.id)} : x))}>✕</button>
                             </div>
                           )}
@@ -218,7 +218,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un }) {
                   disabled={npcImpression.npcId !== n.id || !npcImpression.text.trim()}>✦ Senden</button>
               </div>
             )}
-            <div style={{marginTop:"1rem",paddingTop:"0.8rem",borderTop:"1px solid #f3ebd2",textAlign:"center"}}>
+            <div style={{marginTop:"1rem",paddingTop:"0.8rem",borderTop:"1px solid #1d2822",textAlign:"center"}}>
               <button className="btn-secondary" onClick={() => setExpandedNpc(null)}>✕ Schließen</button>
             </div>
           </div>
@@ -254,7 +254,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un }) {
                     </div>
                     {n.faction && <p className="npc-card-faction">{n.faction}</p>}
                     {n.location && n.location !== "unbekannt" && (
-                      <p style={{fontFamily:"'Cinzel',serif",fontSize:"0.38rem",letterSpacing:"0.08em",textTransform:"uppercase",color:"#a8842e",marginTop:"0.2rem"}}>
+                      <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.38rem",letterSpacing:"0.08em",textTransform:"uppercase",color:"#ffb400",marginTop:"0.2rem"}}>
                         {NPC_LOCATIONS.find(l=>l.id===n.location)?.icon} {NPC_LOCATIONS.find(l=>l.id===n.location)?.label}
                       </p>
                     )}
