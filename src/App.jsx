@@ -173,7 +173,7 @@ export default function WitchlightChronik() {
         <GeschichtenTab gmMode={gmMode} playerName={playerName} snippets={snippets} usn={usn} />
       </div>
       <div hidden={tab !== "npcs"}>
-        <NpcsTab gmMode={gmMode} playerName={playerName} npcs={npcs} un={un} />
+        <NpcsTab gmMode={gmMode} playerName={playerName} npcs={npcs} un={un} pcs={pcs} upc={upc} />
       </div>
       <div hidden={tab !== "pc"}>
         <PlayerCharactersTab gmMode={gmMode} playerName={playerName} needName={needName} pcs={pcs} upc={upc} />

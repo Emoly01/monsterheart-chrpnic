@@ -145,6 +145,12 @@
 .npc-card-name { font-family: var(--display); font-size: 1.05rem; color: var(--ink); margin: 0 0 0.15rem; line-height: 1.1; }
 .npc-card-faction { font-family: var(--body); font-size: 0.9rem; color: #d9d0be; margin: 0; line-height: 1.5; }
 .npc-status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 0.3rem; }
+.npc-pc-chips { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.35rem; }
+.npc-pc-chip { font-family: var(--label); font-size: 0.5rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); border: 1px solid rgba(18,224,182,0.35); background: rgba(18,224,182,0.08); border-radius: 999px; padding: 0.15rem 0.45rem; white-space: nowrap; }
+.npc-pc-links { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.7rem; }
+.npc-pc-link { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+.npc-pc-link-desc { font-family: var(--body); font-style: italic; font-size: 0.9rem; color: #d9d0be; line-height: 1.5; }
+.npc-pc-hint { font-family: var(--body); font-style: italic; font-size: 0.85rem; color: var(--teal); margin: -0.3rem 0 0.8rem; }
 .npc-detail { padding: 1.4rem 1.5rem; margin-bottom: 0.9rem; scroll-margin-top: 130px; animation: fadeIn 0.2s ease; }
 .npc-detail-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 0.9rem; background: rgba(0,0,0,0.28); display: block; }
 .npc-detail-img-placeholder { width: 100%; height: 90px; background: rgba(0,0,0,0.28); border-radius: 12px; margin-bottom: 0.9rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: rgba(244,234,214,0.25); }
