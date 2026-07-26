@@ -125,6 +125,26 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
     updateNpc(npcId, { impressions: (n.impressions || []).filter(imp => imp.id !== impId) });
   };
 
+  const deleteNpc = (id) => {
+    const target = findNpc(id);
+    if (!target) return;
+    const links = pcLinks.get(id) || [];
+    // A merged NPC also lives on a character sheet; deleting it here only drops
+    // the shared entry, so say that instead of letting the card reappear
+    // unexplained.
+    const msg = target.source !== "pc" && links.length > 0
+      ? `${target.name} steht auch im Steckbrief von ${links.map(l => l.pcName).join(", ")}. Aus der NPC-Liste löschen? Der Eintrag beim Charakter bleibt erhalten und wird weiter hier angezeigt.`
+      : `${target.name} wirklich löschen?`;
+    if (!window.confirm(msg)) return;
+    if (target.source === "pc") {
+      upc?.(pcs.map(pc => pc.id !== target.pcId ? pc : { ...pc, npcs: (pc.npcs || []).filter(pn => pn.id !== id) }));
+    } else {
+      un(npcs.filter(n => n.id !== id));
+    }
+    if (expandedNpc === id) setExpandedNpc(null);
+    if (editingNpc === id) { setEditingNpc(null); setShowNpcForm(false); setNpcForm(blankForm()); }
+  };
+
   return (
     <div className="page">
       <div className="section-hdr">
@@ -133,9 +153,9 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
           <h1 className="section-title">Gesichter</h1>
           <p className="section-sub">Die Gesichter der Insel — Verbündete, Rätsel und Gefahren.</p>
         </div>
-        {gmMode && <button className="btn-add" onClick={() => { setShowNpcForm(v => !v); setEditingNpc(null); setNpcForm(blankForm()); }}>+ NPC hinzufügen</button>}
+        <button className="btn-add" onClick={() => { setShowNpcForm(v => !v); setEditingNpc(null); setNpcForm(blankForm()); }}>+ NPC hinzufügen</button>
       </div>
-      {gmMode && showNpcForm && (
+      {showNpcForm && (
         <div className="form-panel">
           <p className="form-title">{editingNpc ? "NPC bearbeiten" : "Neuer NPC"}</p>
           {editingNpc && findNpc(editingNpc)?.source === "pc" && (
@@ -163,11 +183,16 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
               </select>
             </div>
           </div>
-          <div className="f-group"><label className="f-label">GM-Notizen (privat)</label>
-            <input className="f-input" value={npcForm.notes} onChange={e => setNpcForm(f=>({...f,notes:e.target.value}))} placeholder="Was die Spieler nicht wissen..." /></div>
+          {/* GM notes stay in the form state while a player edits, so they are
+              never dropped — only the GM gets to see and change them. */}
+          {gmMode && (
+            <div className="f-group"><label className="f-label">GM-Notizen (privat)</label>
+              <input className="f-input" value={npcForm.notes} onChange={e => setNpcForm(f=>({...f,notes:e.target.value}))} placeholder="Was die Spieler nicht wissen..." /></div>
+          )}
           <div className="f-actions">
             <button className="btn-primary" onClick={saveNpc} disabled={!npcForm.name.trim()}>Speichern</button>
             <button className="btn-secondary" onClick={() => { setShowNpcForm(false); setEditingNpc(null); }}>Abbrechen</button>
+            {editingNpc && <button className="btn-delete" style={{marginLeft:"auto"}} onClick={() => deleteNpc(editingNpc)}>🗑 NPC löschen</button>}
           </div>
         </div>
       )}
@@ -223,7 +248,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
               </div>
               <div style={{display:"flex",gap:"0.4rem",alignItems:"center"}}>
                 <span className="tag" style={{color:npcColor(n.status),borderColor:npcColor(n.status)}}>{NPC_STATUSES.find(s=>s.id===n.status)?.label}</span>
-                {gmMode && <button className="btn-secondary" style={{padding:"0.2rem 0.5rem",fontSize:"0.45rem"}} onClick={() => { setNpcForm({name:n.name,faction:n.faction||"",description:n.description||"",imageUrl:n.imageUrl||"",status:n.status||"unbekannt",location:n.location||"unbekannt",notes:n.notes||""}); setEditingNpc(n.id); setShowNpcForm(true); setExpandedNpc(null); }}>✎ Bearbeiten</button>}
+                <button className="btn-secondary" style={{padding:"0.2rem 0.5rem",fontSize:"0.45rem"}} onClick={() => { setNpcForm({name:n.name,faction:n.faction||"",description:n.description||"",imageUrl:n.imageUrl||"",status:n.status||"unbekannt",location:n.location||"unbekannt",notes:n.notes||""}); setEditingNpc(n.id); setShowNpcForm(true); setExpandedNpc(null); }}>✎ Bearbeiten</button>
                 <button className="btn-danger" onClick={() => setExpandedNpc(null)}>✕</button>
               </div>
             </div>

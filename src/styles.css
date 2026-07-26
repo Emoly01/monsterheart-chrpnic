@@ -245,6 +245,9 @@
 .btn-add:disabled { opacity: 0.4; cursor: default; }
 .btn-danger { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.85rem; transition: color 0.15s; padding: 0.1rem; line-height: 1; }
 .btn-danger:hover { color: var(--red); }
+/* Löschen im Bearbeitungsmodus — gleiche Form wie die anderen Formular-Buttons. */
+.btn-delete { font-family: var(--label); font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); background: rgba(255,43,28,0.07); border: 1px solid rgba(255,43,28,0.32); padding: 0.6rem 1.1rem; cursor: pointer; border-radius: 999px; transition: all 0.15s; }
+.btn-delete:hover { background: rgba(255,43,28,0.16); border-color: var(--red); }
 .card-act-edit { font-family: var(--label); font-size: 0.62rem; background: rgba(244,234,214,0.06); border: none; color: var(--muted); cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 6px; transition: all 0.15s; flex-shrink: 0; }
 .card-act-edit:hover { background: rgba(244,234,214,0.12); color: var(--ink); }
 .btn-tiny { font-family: var(--label); font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.55rem; border-radius: 12px; border: 1px solid; cursor: pointer; transition: all 0.12s; white-space: nowrap; background: transparent; }
