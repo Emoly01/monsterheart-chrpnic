@@ -3,12 +3,6 @@ export function formatDate(ts) { return new Date(ts).toLocaleDateString("de-DE",
 
 export const REACTIONS = ["✨","💀","😂","❤️","🎲","😱"];
 export const DEFAULT_PIN = "1234";
-export const QUEST_STATUSES = [
-  { id: "offen",      label: "Offen",       color: "#c99a2e" },
-  { id: "aktiv",      label: "Aktiv",       color: "#86bfa0" },
-  { id: "gelöst",     label: "Gelöst",      color: "#6fae86" },
-  { id: "gescheitert",label: "Gescheitert", color: "#d89a8e" },
-];
 export const NPC_STATUSES = [
   { id: "lebendig", label: "Lebendig", color: "#6fae86" },
   { id: "tot",      label: "Tot",      color: "#d89a8e" },
@@ -16,29 +10,25 @@ export const NPC_STATUSES = [
   { id: "unbekannt",label: "Unbekannt",color: "#c2b896" },
 ];
 
-export const PAKT_TYPES = [
-  { id: "deal",         label: "Pakt/Deal",    color: "#d4a838", icon: "🤝" },
-  { id: "versprechen",  label: "Versprechen",  color: "#86bfa0", icon: "🕊" },
-  { id: "schuld",       label: "Schuld",       color: "#e3c46a", icon: "⚖" },
-  { id: "prophezeiung", label: "Prophezeiung", color: "#c99a2e", icon: "🔮" },
-  { id: "fluch",        label: "Fluch",        color: "#d89a8e", icon: "🥀" },
-];
-export const PAKT_STATUSES = [
-  { id: "offen",     label: "Offen",     color: "#c99a2e" },
-  { id: "eingeloest",label: "Eingelöst", color: "#6fae86" },
-  { id: "gebrochen", label: "Gebrochen", color: "#d89a8e" },
-  { id: "verfallen", label: "Verfallen", color: "#c2b896" },
+// NPCs werden nicht nach Ort sortiert, sondern danach, was sie für die Runde
+// sind. Gespeichert wird weiterhin im Feld `location`.
+export const NPC_CIRCLES = [
+  { id: "all",        label: "Alle",       icon: "✦" },
+  { id: "schule",     label: "Schule",     icon: "🏫" },
+  { id: "familie",    label: "Familie",    icon: "🏠" },
+  { id: "erwachsene", label: "Erwachsene", icon: "👔" },
+  { id: "bekannte",   label: "Bekannte",   icon: "👋" },
+  { id: "freunde",    label: "Freunde",    icon: "💚" },
+  { id: "unbekannt",  label: "Unbekannt",  icon: "❓" },
 ];
 
-export const NPC_LOCATIONS = [
-  { id: "all",       label: "Alle",                  icon: "✦" },
-  { id: "karnival",  label: "Witchlight Karnival",   icon: "🎪" },
-  { id: "hither",    label: "Hither",                icon: "🌿" },
-  { id: "tither",    label: "Tither",                icon: "🍄" },
-  { id: "yon",       label: "Yon",                   icon: "🌙" },
-  { id: "palast",    label: "Palast der Herzensbegierde", icon: "🏰" },
-  { id: "unbekannt", label: "Unbekannt",              icon: "❓" },
-];
+// Ältere Einträge tragen noch Orte aus der Witchlight-Zeit. Alles, was kein
+// gültiger Kreis (mehr) ist, landet sichtbar unter "Unbekannt" statt ins Leere
+// zu zeigen, und kann dort neu einsortiert werden.
+export function npcCircleId(id) {
+  return NPC_CIRCLES.some(c => c.id === id && c.id !== "all") ? id : "unbekannt";
+}
+export function npcCircle(id) { return NPC_CIRCLES.find(c => c.id === npcCircleId(id)); }
 
 export const NPC_SORT_OPTIONS = [
   { id: "alpha",  label: "A → Z",     icon: "🔤" },
@@ -81,44 +71,12 @@ export function sortNpcs(npcs, sortBy) {
   }
 }
 
-export function qColor(id) { return QUEST_STATUSES.find(s => s.id === id)?.color || "#c2b896"; }
 export function npcColor(id) { return NPC_STATUSES.find(s => s.id === id)?.color || "#c2b896"; }
-export function paktType(id) { return PAKT_TYPES.find(t => t.id === id) || PAKT_TYPES[0]; }
-export function paktStatus(id) { return PAKT_STATUSES.find(s => s.id === id) || PAKT_STATUSES[0]; }
-export function sortPakte(arr) {
-  return [...arr].sort((a, b) => {
-    const ao = (a.status || "offen") === "offen" ? 0 : 1;
-    const bo = (b.status || "offen") === "offen" ? 0 : 1;
-    if (ao !== bo) return ao - bo;
-    return (b.ts || 0) - (a.ts || 0);
-  });
-}
-
-export const THEORY_CATEGORIES = [
-  { id: "plot",    label: "Plot-Theorie",   icon: "🔮", color: "#d4a838" },
-  { id: "npc",     label: "NPC-Theorie",    icon: "👤", color: "#86bfa0" },
-  { id: "ort",     label: "Ort / Geheimnis",icon: "🗝",  color: "#e3c46a" },
-  { id: "wild",    label: "Wildes Gerücht", icon: "🌪", color: "#d89a8e" },
-];
-export const THEORY_REACTS = [
-  { emoji: "👍", label: "Glaub ich auch" },
-  { emoji: "👎", label: "Glaub ich nicht" },
-  { emoji: "🤯", label: "Whoa" },
-];
-
-export const FUND_TYPES = [
-  { id: "brief",    label: "Brief",     icon: "✉" },
-  { id: "tagebuch", label: "Tagebuch",  icon: "📔" },
-  { id: "notiz",    label: "Notiz",     icon: "📝" },
-  { id: "artefakt", label: "Artefakt",  icon: "🏺" },
-  { id: "karte",    label: "Karte",     icon: "🗺" },
-  { id: "sonstiges",label: "Sonstiges", icon: "🔮" },
-];
 
 export const GM_CATEGORIES = [
   { id: "plan",    label: "Planung",   color: "#86bfa0", icon: "📋" },
   { id: "secret",  label: "Geheimnis", color: "#c99a2e", icon: "🔐" },
   { id: "npc",     label: "NPC-Info",  color: "#6fae86", icon: "👤" },
-  { id: "world",   label: "Welt",      color: "#e3c46a", icon: "🌍" },
-  { id: "session", label: "Session",   color: "#d89a8e", icon: "🎲" },
+  { id: "world",   label: "Ort",       color: "#e3c46a", icon: "📍" },
+  { id: "session", label: "Session",   color: "#d89a8e", icon: "🎬" },
 ];

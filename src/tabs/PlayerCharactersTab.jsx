@@ -5,6 +5,9 @@ import { makeId, formatDate } from "../constants.js";
 const emptyNpcDraft = { name: "", image: "", description: "" };
 const blankForm = () => ({ name: "", player: "", concept: "", image: "", backstory: "", npcs: [] });
 const HUES = ["#ffb400", "#12e0b6", "#ff2b1c"];
+// Backstories are rich text; measure the readable characters, not the markup.
+const BACKSTORY_LIMIT = 320;
+const plainLength = (html) => (html || "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").trim().length;
 
 // Player Character roster. Players (once they've set a name) can add their own
 // character — including a backstory and a list of important NPCs, all in one
@@ -12,7 +15,7 @@ const HUES = ["#ffb400", "#12e0b6", "#ff2b1c"];
 export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs, upc }) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(blankForm());
-  const [expanded, setExpanded] = useState(null);
+  const [expandedIds, setExpandedIds] = useState(() => new Set());
   const [editingId, setEditingId] = useState(null);
   // NPC being composed inside the character form.
   const [npcDraft, setNpcDraft] = useState(emptyNpcDraft);
@@ -63,7 +66,7 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
   const remove = (pc) => {
     if (!window.confirm(`${pc.name} wirklich löschen?`)) return false;
     upc(pcs.filter(p => p.id !== pc.id));
-    if (expanded === pc.id) setExpanded(null);
+    setExpandedIds(prev => { const next = new Set(prev); next.delete(pc.id); return next; });
     return true;
   };
 
@@ -92,7 +95,7 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
         <div className="section-head">
           <div className="eyebrow">Kampagne · Iere</div>
           <h1 className="section-title">Player Character's</h1>
-          <p className="section-sub">Die Runde, die sich auf Iere wagt.</p>
+          <p className="section-sub">Die Monster, die auf Iere erwachsen werden.</p>
         </div>
         <button className="btn-add" onClick={startAdd}>+ Charakter</button>
       </div>
@@ -106,12 +109,12 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
             <div className="f-group"><label className="f-label">Charaktername</label>
               <input className="f-input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="z.B. Eya" autoFocus /></div>
           </div>
-          <div className="f-group"><label className="f-label">Konzept</label>
-            <input className="f-input" value={form.concept} onChange={e => setForm(f => ({ ...f, concept: e.target.value }))} placeholder="z.B. Die geflohene Priesterin" /></div>
+          <div className="f-group"><label className="f-label">Skin / Konzept</label>
+            <input className="f-input" value={form.concept} onChange={e => setForm(f => ({ ...f, concept: e.target.value }))} placeholder="z.B. Die Hexe, Der Werwolf, Die Sterbliche" /></div>
           <div className="f-group"><label className="f-label">Bild-URL (opt.)</label>
             <input className="f-input" value={form.image} onChange={e => setForm(f => ({ ...f, image: e.target.value }))} placeholder="i.imgur.com/..." /></div>
           <div className="f-group"><label className="f-label">Hintergrundgeschichte</label>
-            <RichEditor value={form.backstory} onChange={v => setForm(f => ({ ...f, backstory: v }))} placeholder="Woher kommt dein Charakter? Was hat ihn geprägt? Ziele, Geheimnisse..." rows={5} /></div>
+            <RichEditor value={form.backstory} onChange={v => setForm(f => ({ ...f, backstory: v }))} placeholder="Woher kommt dein Charakter? Was hat sie/ihn geprägt? Wünsche, Geheimnisse..." rows={5} /></div>
 
           {/* Important NPCs — added right here while creating the character */}
           <div className="f-group">
@@ -199,7 +202,28 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
                 <div>
                   <div className="pc-card-sublabel">Hintergrund</div>
                   {pc.backstory
-                    ? <div className="narrative pc-backstory" dangerouslySetInnerHTML={{ __html: pc.backstory }} />
+                    ? (() => {
+                        const isOpen = expandedIds.has(pc.id);
+                        // Long backstories would push everything else off the card,
+                        // so they start folded — short ones need no toggle at all.
+                        const long = plainLength(pc.backstory) > BACKSTORY_LIMIT;
+                        return (
+                          <>
+                            <div className={`narrative pc-backstory${long && !isOpen ? " clamped" : ""}`}
+                              dangerouslySetInnerHTML={{ __html: pc.backstory }} />
+                            {long && (
+                              <button className="pc-backstory-toggle"
+                                onClick={() => setExpandedIds(prev => {
+                                  const next = new Set(prev);
+                                  next.has(pc.id) ? next.delete(pc.id) : next.add(pc.id);
+                                  return next;
+                                })}>
+                                {isOpen ? "▴ Weniger" : "▾ Ganzen Hintergrund lesen"}
+                              </button>
+                            )}
+                          </>
+                        );
+                      })()
                     : <p className="pc-empty-note">Noch keine Hintergrundgeschichte.{editable ? " Tippe auf ✎, um sie zu schreiben." : ""}</p>}
                 </div>
                 {npcs.length > 0 && (

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { NPC_STATUSES, NPC_LOCATIONS, NPC_SORT_OPTIONS, sortNpcs, npcColor, makeId } from "../constants.js";
+import { NPC_STATUSES, NPC_CIRCLES, NPC_SORT_OPTIONS, sortNpcs, npcColor, npcCircle, npcCircleId, makeId } from "../constants.js";
 
 const blankForm = () => ({ name: "", faction: "", description: "", imageUrl: "", status: "lebendig", location: "unbekannt", notes: "" });
 const norm = (s) => (s || "").trim().toLowerCase();
@@ -57,7 +57,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
   const [editingNpc, setEditingNpc] = useState(null);
   const [showNpcForm, setShowNpcForm] = useState(false);
   const [expandedNpc, setExpandedNpc] = useState(null);
-  const [npcLocation, setNpcLocation] = useState("all");
+  const [circleFilter, setCircleFilter] = useState("all");
   const [npcSearch, setNpcSearch] = useState("");
   const [npcSort, setNpcSort] = useState("alpha");
   const [npcImpression, setNpcImpression] = useState({ npcId: null, text: "" });
@@ -151,7 +151,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
         <div className="section-head">
           <div className="eyebrow">Kampagne · Iere</div>
           <h1 className="section-title">Gesichter</h1>
-          <p className="section-sub">Die Gesichter der Insel — Verbündete, Rätsel und Gefahren.</p>
+          <p className="section-sub">Wer euch das Leben schwer macht — Familie, Lehrer:innen, Flammen und Feinde.</p>
         </div>
         <button className="btn-add" onClick={() => { setShowNpcForm(v => !v); setEditingNpc(null); setNpcForm(blankForm()); }}>+ NPC hinzufügen</button>
       </div>
@@ -163,12 +163,12 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
           )}
           <div className="f-row">
             <div className="f-group"><label className="f-label">Name</label>
-              <input className="f-input" value={npcForm.name} onChange={e => setNpcForm(f=>({...f,name:e.target.value}))} placeholder="z.B. Kettlesteam" autoFocus /></div>
-            <div className="f-group"><label className="f-label">Fraktion / Rolle</label>
-              <input className="f-input" value={npcForm.faction} onChange={e => setNpcForm(f=>({...f,faction:e.target.value}))} placeholder="z.B. Zirkus Witchlight" /></div>
+              <input className="f-input" value={npcForm.name} onChange={e => setNpcForm(f=>({...f,name:e.target.value}))} placeholder="z.B. Ms. Baptiste" autoFocus /></div>
+            <div className="f-group"><label className="f-label">Rolle / Verbindung</label>
+              <input className="f-input" value={npcForm.faction} onChange={e => setNpcForm(f=>({...f,faction:e.target.value}))} placeholder="z.B. Lehrerin, Cousin, Ex" /></div>
           </div>
           <div className="f-group"><label className="f-label">Beschreibung</label>
-            <textarea className="f-input" rows={2} value={npcForm.description} onChange={e => setNpcForm(f=>({...f,description:e.target.value}))} placeholder="Was die Spieler über sie/ihn wissen..." /></div>
+            <textarea className="f-input" rows={2} value={npcForm.description} onChange={e => setNpcForm(f=>({...f,description:e.target.value}))} placeholder="Was alle über diese Person wissen..." /></div>
           <div className="f-group"><label className="f-label">Bild-URL (optional — i.imgur.com/...)</label>
             <input className="f-input" value={npcForm.imageUrl} onChange={e => setNpcForm(f=>({...f,imageUrl:e.target.value}))} placeholder="https://i.imgur.com/abc123.jpg" /></div>
           <div className="f-row">
@@ -177,9 +177,9 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                 {NPC_STATUSES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
               </select>
             </div>
-            <div className="f-group"><label className="f-label">Ort</label>
-              <select className="f-select" value={npcForm.location||"unbekannt"} onChange={e => setNpcForm(f=>({...f,location:e.target.value}))}>
-                {NPC_LOCATIONS.filter(l => l.id !== "all").map(l => <option key={l.id} value={l.id}>{l.icon} {l.label}</option>)}
+            <div className="f-group"><label className="f-label">Umfeld</label>
+              <select className="f-select" value={npcCircleId(npcForm.location)} onChange={e => setNpcForm(f=>({...f,location:e.target.value}))}>
+                {NPC_CIRCLES.filter(l => l.id !== "all").map(l => <option key={l.id} value={l.id}>{l.icon} {l.label}</option>)}
               </select>
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
               never dropped — only the GM gets to see and change them. */}
           {gmMode && (
             <div className="f-group"><label className="f-label">GM-Notizen (privat)</label>
-              <input className="f-input" value={npcForm.notes} onChange={e => setNpcForm(f=>({...f,notes:e.target.value}))} placeholder="Was die Spieler nicht wissen..." /></div>
+              <input className="f-input" value={npcForm.notes} onChange={e => setNpcForm(f=>({...f,notes:e.target.value}))} placeholder="Was niemand wissen soll..." /></div>
           )}
           <div className="f-actions">
             <button className="btn-primary" onClick={saveNpc} disabled={!npcForm.name.trim()}>Speichern</button>
@@ -200,12 +200,12 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
       {/* Location tabs */}
       {allNpcs.length > 0 && (
         <div className="npc-loc-tabs">
-          {NPC_LOCATIONS.map(l => {
-            const count = l.id === "all" ? allNpcs.length : allNpcs.filter(n => (n.location || "unbekannt") === l.id).length;
+          {NPC_CIRCLES.map(l => {
+            const count = l.id === "all" ? allNpcs.length : allNpcs.filter(n => npcCircleId(n.location) === l.id).length;
             if (l.id !== "all" && count === 0) return null;
             return (
-              <button key={l.id} className={`npc-loc-tab ${npcLocation === l.id ? "active" : ""}`}
-                onClick={() => setNpcLocation(l.id)}>
+              <button key={l.id} className={`npc-loc-tab ${circleFilter === l.id ? "active" : ""}`}
+                onClick={() => setCircleFilter(l.id)}>
                 <span>{l.icon}</span>{l.label}
                 <span style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.38rem",opacity:0.7,marginLeft:"0.15rem"}}>({count})</span>
               </button>
@@ -221,7 +221,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
             <span className="npc-search-icon">🔍</span>
             <input className="npc-search-input" value={npcSearch}
               onChange={e => setNpcSearch(e.target.value)}
-              placeholder="Nach Name, Fraktion oder Charakter suchen..." />
+              placeholder="Nach Name, Rolle oder Charakter suchen..." />
           </div>
           <div className="npc-sort-wrap">
             {NPC_SORT_OPTIONS.map(s => (
@@ -283,9 +283,9 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                 ))}
               </div>
             )}
-            {n.location && n.location !== "unbekannt" && (
+            {npcCircleId(n.location) !== "unbekannt" && (
               <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.45rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#ffb400",marginBottom:"0.4rem"}}>
-                {NPC_LOCATIONS.find(l=>l.id===n.location)?.icon} {NPC_LOCATIONS.find(l=>l.id===n.location)?.label}
+                {npcCircle(n.location).icon} {npcCircle(n.location).label}
               </p>
             )}
             {gmMode && n.notes && <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.5rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#ffb400",marginBottom:"0.3rem",marginTop:"0.5rem"}}>GM-Notiz: <span style={{fontFamily:"'Spectral', serif",fontStyle:"italic",fontSize:"0.8rem",letterSpacing:0,textTransform:"none",color:"#9aa89c"}}>{n.notes}</span></p>}
@@ -349,7 +349,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
         ? <div className="empty">Noch keine NPCs eingetragen.<br /><span style={{fontSize:"0.85rem"}}>Die Welt füllt sich langsam... 👥</span></div>
         : (() => {
           const filtered = allNpcs.filter(n => {
-            const locMatch = npcLocation === "all" || (n.location || "unbekannt") === npcLocation;
+            const locMatch = circleFilter === "all" || npcCircleId(n.location) === circleFilter;
             const q = npcSearch.toLowerCase().trim();
             const linkedTo = (pcLinks.get(n.id) || []).map(l => l.pcName.toLowerCase()).join(" ");
             const searchMatch = !q || n.name.toLowerCase().includes(q) || (n.faction||"").toLowerCase().includes(q) || linkedTo.includes(q);
@@ -381,9 +381,9 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                           {links.map(l => <span key={l.pcId} className="npc-pc-chip">🎭 {l.pcName}</span>)}
                         </div>
                       )}
-                      {n.location && n.location !== "unbekannt" && (
+                      {npcCircleId(n.location) !== "unbekannt" && (
                         <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.38rem",letterSpacing:"0.08em",textTransform:"uppercase",color:"#ffb400",marginTop:"0.2rem"}}>
-                          {NPC_LOCATIONS.find(l=>l.id===n.location)?.icon} {NPC_LOCATIONS.find(l=>l.id===n.location)?.label}
+                          {npcCircle(n.location).icon} {npcCircle(n.location).label}
                         </p>
                       )}
                     </div>
