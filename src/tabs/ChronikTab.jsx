@@ -145,7 +145,7 @@ ${articles}
                 <div className="f-group"><label className="f-label">Datum</label>
                   <input className="f-input" type="date" value={recapForm.date} onChange={e => setRecapForm(f => ({...f, date: e.target.value}))} /></div>
                 <div className="f-group"><label className="f-label">Titel</label>
-                  <input className="f-input" value={recapForm.title} onChange={e => setRecapForm(f => ({...f, title: e.target.value}))} placeholder="Der vergessene Wald" autoFocus /></div>
+                  <input className="f-input" value={recapForm.title} onChange={e => setRecapForm(f => ({...f, title: e.target.value}))} placeholder="z.B. Die Nacht nach der Fête" autoFocus /></div>
               </div>
               <div className="f-group"><label className="f-label">Was ist passiert?</label>
                 <RichEditor value={recapForm.text} onChange={v => setRecapForm(f => ({...f, text: v}))} placeholder="Schreib hier deinen Recap..." rows={6} /></div>

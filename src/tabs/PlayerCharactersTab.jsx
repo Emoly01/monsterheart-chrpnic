@@ -92,7 +92,7 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
         <div className="section-head">
           <div className="eyebrow">Kampagne · Iere</div>
           <h1 className="section-title">Player Character's</h1>
-          <p className="section-sub">Die Runde, die sich auf Iere wagt.</p>
+          <p className="section-sub">Die Monster, die auf Iere erwachsen werden.</p>
         </div>
         <button className="btn-add" onClick={startAdd}>+ Charakter</button>
       </div>
@@ -106,12 +106,12 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
             <div className="f-group"><label className="f-label">Charaktername</label>
               <input className="f-input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="z.B. Eya" autoFocus /></div>
           </div>
-          <div className="f-group"><label className="f-label">Konzept</label>
-            <input className="f-input" value={form.concept} onChange={e => setForm(f => ({ ...f, concept: e.target.value }))} placeholder="z.B. Die geflohene Priesterin" /></div>
+          <div className="f-group"><label className="f-label">Skin / Konzept</label>
+            <input className="f-input" value={form.concept} onChange={e => setForm(f => ({ ...f, concept: e.target.value }))} placeholder="z.B. Die Hexe, Der Werwolf, Die Sterbliche" /></div>
           <div className="f-group"><label className="f-label">Bild-URL (opt.)</label>
             <input className="f-input" value={form.image} onChange={e => setForm(f => ({ ...f, image: e.target.value }))} placeholder="i.imgur.com/..." /></div>
           <div className="f-group"><label className="f-label">Hintergrundgeschichte</label>
-            <RichEditor value={form.backstory} onChange={v => setForm(f => ({ ...f, backstory: v }))} placeholder="Woher kommt dein Charakter? Was hat ihn geprägt? Ziele, Geheimnisse..." rows={5} /></div>
+            <RichEditor value={form.backstory} onChange={v => setForm(f => ({ ...f, backstory: v }))} placeholder="Woher kommt dein Charakter? Was hat sie/ihn geprägt? Wünsche, Geheimnisse..." rows={5} /></div>
 
           {/* Important NPCs — added right here while creating the character */}
           <div className="f-group">

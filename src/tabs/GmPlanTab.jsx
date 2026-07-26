@@ -94,7 +94,7 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
       <div className="gm-sub-tabs">
         {[
           { id: "dossiers", icon: "👤", label: "PC Dossiers", count: pcDossiers.length },
-          { id: "world",    icon: "🌍", label: "Weltenarchiv", count: worldEntries.length },
+          { id: "world",    icon: "📍", label: "Orte & Gerüchte", count: worldEntries.length },
           { id: "quick",    icon: "📝", label: "Quick Notes", count: quickNotes.filter(n=>!n.done).length },
           { id: "legacy",   icon: "📋", label: "Notizen", count: gmNotes.length },
         ].map(t => (
@@ -124,11 +124,11 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
               </div>
               <div className="f-group"><label className="f-label">Backstory</label>
                 <RichEditor value={dossierForm.backstory} onChange={v => setDossierForm(f=>({...f,backstory:v}))} placeholder="Hintergrundgeschichte des Charakters..." rows={4} /></div>
-              <div className="f-group"><label className="f-label">Geheime Plot-Fäden & Hooks</label>
-                <RichEditor value={dossierForm.threads} onChange={v => setDossierForm(f=>({...f,threads:v}))} placeholder="Welche Fäden ziehst du für diesen PC? Welche Geheimnisse warten?" rows={4} /></div>
+              <div className="f-group"><label className="f-label">Strings & offene Fäden</label>
+                <RichEditor value={dossierForm.threads} onChange={v => setDossierForm(f=>({...f,threads:v}))} placeholder="Welche Strings hältst du auf diesen Charakter? Welche Geheimnisse warten?" rows={4} /></div>
               <div className="f-group"><label className="f-label">Beziehungen (NPCs & andere PCs)</label>
                 <RichEditor value={dossierForm.relationships} onChange={v => setDossierForm(f=>({...f,relationships:v}))} placeholder="Wichtige Verbindungen, Rivalen, Verbündete..." rows={3} /></div>
-              <div className="f-group"><label className="f-label">Arc-Notizen (Wohin geht die Reise?)</label>
+              <div className="f-group"><label className="f-label">Season-Arc (Wohin soll es gehen?)</label>
                 <RichEditor value={dossierForm.arc} onChange={v => setDossierForm(f=>({...f,arc:v}))} placeholder="Wo soll dieser Charakter hin? Welche Entwicklung planst du?" rows={3} /></div>
               <div className="f-actions">
                 <button className="btn-primary" onClick={saveDossier} disabled={!dossierForm.name.trim()}>{editingDossier ? "Speichern" : "Dossier anlegen"}</button>
@@ -143,10 +143,10 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
               const isOpen = expandedDossier === d.id;
               const secState = expandedDossierSection[d.id] || {};
               const sections = [
-                { key: "backstory",      label: "Backstory",         icon: "📜", color: "#ffb400", content: d.backstory },
-                { key: "threads",        label: "Plot-Fäden & Hooks",icon: "🕸", color: "#ffb400", content: d.threads },
+                { key: "backstory",      label: "Backstory",         icon: "📔", color: "#ffb400", content: d.backstory },
+                { key: "threads",        label: "Strings & Fäden",   icon: "🧵", color: "#ffb400", content: d.threads },
                 { key: "relationships",  label: "Beziehungen",       icon: "🤝", color: "#12e0b6", content: d.relationships },
-                { key: "arc",            label: "Arc-Notizen",       icon: "🌟", color: "#4fd39a", content: d.arc },
+                { key: "arc",            label: "Season-Arc",        icon: "🌙", color: "#4fd39a", content: d.arc },
               ];
               return (
                 <div key={d.id} className="dossier-card">
@@ -209,14 +209,14 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
 
           {showWorldForm && (
             <div className="form-panel">
-              <p className="form-title">{editingWorld ? "Eintrag bearbeiten" : "Neuer Weltenarchiv-Eintrag"}</p>
+              <p className="form-title">{editingWorld ? "Eintrag bearbeiten" : "Neuer Eintrag"}</p>
               <div className="f-group"><label className="f-label">Typ</label>
                 <div className="world-filter-row">
                   {[
-                    { id: "ort",    label: "Ort / Karte",       icon: "🗺", color: "#4fd39a" },
-                    { id: "wissen", label: "Wissen / Lore",     icon: "📚", color: "#ffb400" },
+                    { id: "ort",    label: "Ort",               icon: "📍", color: "#4fd39a" },
+                    { id: "wissen", label: "Gerücht / Geheimnis",icon: "🕯", color: "#ffb400" },
                     { id: "regel",  label: "Hausregel",         icon: "⚖",  color: "#ffb400" },
-                    { id: "fraktion",label: "Fraktion / Gruppe",icon: "🏴", color: "#12e0b6" },
+                    { id: "fraktion",label: "Clique / Familie",  icon: "🖤", color: "#12e0b6" },
                   ].map(t => (
                     <span key={t.id} className={`world-filter-btn ${worldForm.type === t.id ? "active" : ""}`}
                       onClick={() => setWorldForm(f=>({...f,type:t.id}))}>{t.icon} {t.label}</span>
@@ -224,9 +224,9 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                 </div>
               </div>
               <div className="f-group"><label className="f-label">Titel</label>
-                <input className="f-input" value={worldForm.title} onChange={e => setWorldForm(f=>({...f,title:e.target.value}))} placeholder="z.B. Die Mondblumenlichtung" autoFocus /></div>
+                <input className="f-input" value={worldForm.title} onChange={e => setWorldForm(f=>({...f,title:e.target.value}))} placeholder="z.B. Die Schule nach Mitternacht" autoFocus /></div>
               <div className="f-group"><label className="f-label">Inhalt</label>
-                <RichEditor value={worldForm.text} onChange={v => setWorldForm(f=>({...f,text:v}))} placeholder="Beschreibung, Regeln, Lore..." rows={6} /></div>
+                <RichEditor value={worldForm.text} onChange={v => setWorldForm(f=>({...f,text:v}))} placeholder="Beschreibung, wer dort verkehrt, was dort passiert ist..." rows={6} /></div>
               <div className="f-group"><label className="f-label">Bild-URL (optional)</label>
                 <input className="f-input" value={worldForm.imageUrl} onChange={e => setWorldForm(f=>({...f,imageUrl:e.target.value}))} placeholder="https://i.imgur.com/..." /></div>
               <div className="f-actions">
@@ -239,10 +239,10 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
           {(() => {
             const WORLD_TYPES = [
               { id: "all",      label: "Alle",             icon: "✦",  color: "#9aa89c" },
-              { id: "ort",      label: "Orte",             icon: "🗺", color: "#4fd39a" },
-              { id: "wissen",   label: "Wissen",           icon: "📚", color: "#ffb400" },
+              { id: "ort",      label: "Orte",             icon: "📍", color: "#4fd39a" },
+              { id: "wissen",   label: "Gerüchte",         icon: "🕯", color: "#ffb400" },
               { id: "regel",    label: "Hausregeln",       icon: "⚖",  color: "#ffb400" },
-              { id: "fraktion", label: "Fraktionen",       icon: "🏴", color: "#12e0b6" },
+              { id: "fraktion", label: "Cliquen",          icon: "🖤", color: "#12e0b6" },
             ];
             const filtered = worldFilter === "all" ? worldEntries : worldEntries.filter(w => w.type === worldFilter);
             return (
@@ -288,7 +288,7 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                 })()}
 
                 {filtered.length === 0
-                  ? <div className="empty">Noch keine Einträge im Weltenarchiv.<br /><span style={{fontSize:"0.85rem"}}>Orte, Lore, Hausregeln — dein Weltenbau. 🌍</span></div>
+                  ? <div className="empty">Noch keine Orte oder Gerüchte.<br /><span style={{fontSize:"0.85rem"}}>Wo spielt es, und was wird getuschelt? 📍</span></div>
                   : filtered.map(w => {
                     const wtype = WORLD_TYPES.find(t => t.id === w.type);
                     return (
@@ -403,7 +403,7 @@ export default function GmPlanTab({ pcDossiers, upd, worldEntries, uwe, quickNot
                 </div>
               </div>
               <div className="f-group"><label className="f-label">Titel</label>
-                <input className="f-input" value={gmNoteForm.title} onChange={e => setGmNoteForm(f=>({...f,title:e.target.value}))} placeholder="z.B. Session 5 Vorbereitung" autoFocus /></div>
+                <input className="f-input" value={gmNoteForm.title} onChange={e => setGmNoteForm(f=>({...f,title:e.target.value}))} placeholder="z.B. Vorbereitung Session 5" autoFocus /></div>
               <div className="f-group"><label className="f-label">Inhalt</label>
                 <RichEditor value={gmNoteForm.text} onChange={v => setGmNoteForm(f=>({...f,text:v}))} placeholder="Deine Planungsnotizen, Geheimnisse, NPC-Details..." rows={6} /></div>
               <div className="f-actions">
