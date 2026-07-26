@@ -10,29 +10,25 @@ export const NPC_STATUSES = [
   { id: "unbekannt",label: "Unbekannt",color: "#c2b896" },
 ];
 
-// Orte auf Iere — Monsterhearts spielt zwischen Schule, Zuhause und den
-// Rändern der Stadt, nicht in Dungeons.
-export const NPC_LOCATIONS = [
-  { id: "all",       label: "Alle",       icon: "✦" },
-  { id: "schule",    label: "Schule",     icon: "🏫" },
-  { id: "zuhause",   label: "Zuhause",    icon: "🛏" },
-  { id: "stadt",     label: "Stadt",      icon: "🌆" },
-  { id: "karneval",  label: "Karneval",   icon: "🎭" },
-  { id: "strand",    label: "Strand",     icon: "🌊" },
-  { id: "busch",     label: "Der Busch",  icon: "🌴" },
-  { id: "kirche",    label: "Kirche",     icon: "⛪" },
-  { id: "unbekannt", label: "Unbekannt",  icon: "❓" },
+// NPCs werden nicht nach Ort sortiert, sondern danach, was sie für die Runde
+// sind. Gespeichert wird weiterhin im Feld `location`.
+export const NPC_CIRCLES = [
+  { id: "all",        label: "Alle",       icon: "✦" },
+  { id: "schule",     label: "Schule",     icon: "🏫" },
+  { id: "familie",    label: "Familie",    icon: "🏠" },
+  { id: "erwachsene", label: "Erwachsene", icon: "👔" },
+  { id: "bekannte",   label: "Bekannte",   icon: "👋" },
+  { id: "freunde",    label: "Freunde",    icon: "💚" },
+  { id: "unbekannt",  label: "Unbekannt",  icon: "❓" },
 ];
 
-// Gespeicherte NPCs tragen teils noch die alten Witchlight-Orte. Sie sollen
-// nicht ins Leere zeigen: der Karnival wird zum Karneval, der Rest landet unter
-// "Unbekannt" und kann neu einsortiert werden.
-const LEGACY_NPC_LOCATIONS = { karnival: "karneval", hither: "unbekannt", tither: "unbekannt", yon: "unbekannt", palast: "unbekannt" };
-export function npcLocationId(id) {
-  const resolved = LEGACY_NPC_LOCATIONS[id] || id || "unbekannt";
-  return NPC_LOCATIONS.some(l => l.id === resolved) ? resolved : "unbekannt";
+// Ältere Einträge tragen noch Orte aus der Witchlight-Zeit. Alles, was kein
+// gültiger Kreis (mehr) ist, landet sichtbar unter "Unbekannt" statt ins Leere
+// zu zeigen, und kann dort neu einsortiert werden.
+export function npcCircleId(id) {
+  return NPC_CIRCLES.some(c => c.id === id && c.id !== "all") ? id : "unbekannt";
 }
-export function npcLocation(id) { return NPC_LOCATIONS.find(l => l.id === npcLocationId(id)); }
+export function npcCircle(id) { return NPC_CIRCLES.find(c => c.id === npcCircleId(id)); }
 
 export const NPC_SORT_OPTIONS = [
   { id: "alpha",  label: "A → Z",     icon: "🔤" },

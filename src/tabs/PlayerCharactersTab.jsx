@@ -5,6 +5,9 @@ import { makeId, formatDate } from "../constants.js";
 const emptyNpcDraft = { name: "", image: "", description: "" };
 const blankForm = () => ({ name: "", player: "", concept: "", image: "", backstory: "", npcs: [] });
 const HUES = ["#ffb400", "#12e0b6", "#ff2b1c"];
+// Backstories are rich text; measure the readable characters, not the markup.
+const BACKSTORY_LIMIT = 320;
+const plainLength = (html) => (html || "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").trim().length;
 
 // Player Character roster. Players (once they've set a name) can add their own
 // character — including a backstory and a list of important NPCs, all in one
@@ -12,7 +15,7 @@ const HUES = ["#ffb400", "#12e0b6", "#ff2b1c"];
 export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs, upc }) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(blankForm());
-  const [expanded, setExpanded] = useState(null);
+  const [expandedIds, setExpandedIds] = useState(() => new Set());
   const [editingId, setEditingId] = useState(null);
   // NPC being composed inside the character form.
   const [npcDraft, setNpcDraft] = useState(emptyNpcDraft);
@@ -63,7 +66,7 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
   const remove = (pc) => {
     if (!window.confirm(`${pc.name} wirklich löschen?`)) return false;
     upc(pcs.filter(p => p.id !== pc.id));
-    if (expanded === pc.id) setExpanded(null);
+    setExpandedIds(prev => { const next = new Set(prev); next.delete(pc.id); return next; });
     return true;
   };
 
@@ -199,7 +202,28 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
                 <div>
                   <div className="pc-card-sublabel">Hintergrund</div>
                   {pc.backstory
-                    ? <div className="narrative pc-backstory" dangerouslySetInnerHTML={{ __html: pc.backstory }} />
+                    ? (() => {
+                        const isOpen = expandedIds.has(pc.id);
+                        // Long backstories would push everything else off the card,
+                        // so they start folded — short ones need no toggle at all.
+                        const long = plainLength(pc.backstory) > BACKSTORY_LIMIT;
+                        return (
+                          <>
+                            <div className={`narrative pc-backstory${long && !isOpen ? " clamped" : ""}`}
+                              dangerouslySetInnerHTML={{ __html: pc.backstory }} />
+                            {long && (
+                              <button className="pc-backstory-toggle"
+                                onClick={() => setExpandedIds(prev => {
+                                  const next = new Set(prev);
+                                  next.has(pc.id) ? next.delete(pc.id) : next.add(pc.id);
+                                  return next;
+                                })}>
+                                {isOpen ? "▴ Weniger" : "▾ Ganzen Hintergrund lesen"}
+                              </button>
+                            )}
+                          </>
+                        );
+                      })()
                     : <p className="pc-empty-note">Noch keine Hintergrundgeschichte.{editable ? " Tippe auf ✎, um sie zu schreiben." : ""}</p>}
                 </div>
                 {npcs.length > 0 && (

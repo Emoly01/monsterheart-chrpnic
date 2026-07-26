@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { NPC_STATUSES, NPC_LOCATIONS, NPC_SORT_OPTIONS, sortNpcs, npcColor, npcLocation, npcLocationId, makeId } from "../constants.js";
+import { NPC_STATUSES, NPC_CIRCLES, NPC_SORT_OPTIONS, sortNpcs, npcColor, npcCircle, npcCircleId, makeId } from "../constants.js";
 
 const blankForm = () => ({ name: "", faction: "", description: "", imageUrl: "", status: "lebendig", location: "unbekannt", notes: "" });
 const norm = (s) => (s || "").trim().toLowerCase();
@@ -57,7 +57,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
   const [editingNpc, setEditingNpc] = useState(null);
   const [showNpcForm, setShowNpcForm] = useState(false);
   const [expandedNpc, setExpandedNpc] = useState(null);
-  const [locFilter, setLocFilter] = useState("all");
+  const [circleFilter, setCircleFilter] = useState("all");
   const [npcSearch, setNpcSearch] = useState("");
   const [npcSort, setNpcSort] = useState("alpha");
   const [npcImpression, setNpcImpression] = useState({ npcId: null, text: "" });
@@ -177,9 +177,9 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                 {NPC_STATUSES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
               </select>
             </div>
-            <div className="f-group"><label className="f-label">Ort</label>
-              <select className="f-select" value={npcLocationId(npcForm.location)} onChange={e => setNpcForm(f=>({...f,location:e.target.value}))}>
-                {NPC_LOCATIONS.filter(l => l.id !== "all").map(l => <option key={l.id} value={l.id}>{l.icon} {l.label}</option>)}
+            <div className="f-group"><label className="f-label">Umfeld</label>
+              <select className="f-select" value={npcCircleId(npcForm.location)} onChange={e => setNpcForm(f=>({...f,location:e.target.value}))}>
+                {NPC_CIRCLES.filter(l => l.id !== "all").map(l => <option key={l.id} value={l.id}>{l.icon} {l.label}</option>)}
               </select>
             </div>
           </div>
@@ -200,12 +200,12 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
       {/* Location tabs */}
       {allNpcs.length > 0 && (
         <div className="npc-loc-tabs">
-          {NPC_LOCATIONS.map(l => {
-            const count = l.id === "all" ? allNpcs.length : allNpcs.filter(n => npcLocationId(n.location) === l.id).length;
+          {NPC_CIRCLES.map(l => {
+            const count = l.id === "all" ? allNpcs.length : allNpcs.filter(n => npcCircleId(n.location) === l.id).length;
             if (l.id !== "all" && count === 0) return null;
             return (
-              <button key={l.id} className={`npc-loc-tab ${locFilter === l.id ? "active" : ""}`}
-                onClick={() => setLocFilter(l.id)}>
+              <button key={l.id} className={`npc-loc-tab ${circleFilter === l.id ? "active" : ""}`}
+                onClick={() => setCircleFilter(l.id)}>
                 <span>{l.icon}</span>{l.label}
                 <span style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.38rem",opacity:0.7,marginLeft:"0.15rem"}}>({count})</span>
               </button>
@@ -283,9 +283,9 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                 ))}
               </div>
             )}
-            {npcLocationId(n.location) !== "unbekannt" && (
+            {npcCircleId(n.location) !== "unbekannt" && (
               <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.45rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#ffb400",marginBottom:"0.4rem"}}>
-                {npcLocation(n.location).icon} {npcLocation(n.location).label}
+                {npcCircle(n.location).icon} {npcCircle(n.location).label}
               </p>
             )}
             {gmMode && n.notes && <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.5rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#ffb400",marginBottom:"0.3rem",marginTop:"0.5rem"}}>GM-Notiz: <span style={{fontFamily:"'Spectral', serif",fontStyle:"italic",fontSize:"0.8rem",letterSpacing:0,textTransform:"none",color:"#9aa89c"}}>{n.notes}</span></p>}
@@ -349,7 +349,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
         ? <div className="empty">Noch keine NPCs eingetragen.<br /><span style={{fontSize:"0.85rem"}}>Die Welt füllt sich langsam... 👥</span></div>
         : (() => {
           const filtered = allNpcs.filter(n => {
-            const locMatch = locFilter === "all" || npcLocationId(n.location) === locFilter;
+            const locMatch = circleFilter === "all" || npcCircleId(n.location) === circleFilter;
             const q = npcSearch.toLowerCase().trim();
             const linkedTo = (pcLinks.get(n.id) || []).map(l => l.pcName.toLowerCase()).join(" ");
             const searchMatch = !q || n.name.toLowerCase().includes(q) || (n.faction||"").toLowerCase().includes(q) || linkedTo.includes(q);
@@ -381,9 +381,9 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                           {links.map(l => <span key={l.pcId} className="npc-pc-chip">🎭 {l.pcName}</span>)}
                         </div>
                       )}
-                      {npcLocationId(n.location) !== "unbekannt" && (
+                      {npcCircleId(n.location) !== "unbekannt" && (
                         <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.38rem",letterSpacing:"0.08em",textTransform:"uppercase",color:"#ffb400",marginTop:"0.2rem"}}>
-                          {npcLocation(n.location).icon} {npcLocation(n.location).label}
+                          {npcCircle(n.location).icon} {npcCircle(n.location).label}
                         </p>
                       )}
                     </div>
