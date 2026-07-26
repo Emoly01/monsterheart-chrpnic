@@ -19,7 +19,9 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
   const [editingNpc, setEditingNpc] = useState(null);
 
   const canWrite = gmMode || !!playerName;
-  const canEdit = (pc) => gmMode || (pc.owner && pc.owner === playerName);
+  // Everyone at the table may edit and delete every character — the group keeps
+  // the roster together rather than each entry belonging to one person.
+  const canEdit = () => true;
 
   const resetForm = () => { setForm(blankForm()); setNpcDraft(emptyNpcDraft); setEditingNpc(null); };
 
@@ -59,10 +61,10 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
   };
 
   const remove = (pc) => {
-    if (window.confirm(`${pc.name} wirklich löschen?`)) {
-      upc(pcs.filter(p => p.id !== pc.id));
-      if (expanded === pc.id) setExpanded(null);
-    }
+    if (!window.confirm(`${pc.name} wirklich löschen?`)) return false;
+    upc(pcs.filter(p => p.id !== pc.id));
+    if (expanded === pc.id) setExpanded(null);
+    return true;
   };
 
   // ── Important NPCs, composed directly in the character form ──
@@ -154,6 +156,12 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
           <div className="f-actions">
             <button className="btn-primary" onClick={save} disabled={!form.name.trim()}>Charakter speichern</button>
             <button className="btn-secondary" onClick={closeForm}>Abbrechen</button>
+            {editingId && (
+              <button className="btn-delete" style={{ marginLeft: "auto" }}
+                onClick={() => { const pc = pcs.find(p => p.id === editingId); if (pc && remove(pc)) closeForm(); }}>
+                🗑 Charakter löschen
+              </button>
+            )}
           </div>
         </div>
       )}
