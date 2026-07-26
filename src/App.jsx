@@ -9,7 +9,9 @@ import PlayerCharactersTab from "./tabs/PlayerCharactersTab.jsx";
 import HausTab from "./tabs/HausTab.jsx";
 import MoodboardTab from "./tabs/MoodboardTab.jsx";
 import GmPlanTab from "./tabs/GmPlanTab.jsx";
+import NotizenTab from "./tabs/NotizenTab.jsx";
 import SchnellerfassungBar from "./SchnellerfassungBar.jsx";
+import SpielerBar from "./SpielerBar.jsx";
 import "./styles.css";
 
 const S = { width: 15, height: 15, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" };
@@ -20,6 +22,7 @@ const TAB_ICONS = {
   npcs:       <svg {...S}><path d="M3 11c0 4 2 6 4.5 6S11 15 11 12c0-2-1-4-4-4s-4 1-4 3z"/><path d="M13 12c0 3 1.5 5 3.5 5S21 15 21 11c0-2-1-3-4-3s-4 1-4 4z"/></svg>,
   pc:         <svg {...S}><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>,
   moodboard:  <svg {...S}><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg>,
+  notizen:    <svg {...S}><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>,
   haus:       <svg {...S}><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>,
   gmplan:     <svg {...S}><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>,
 };
@@ -45,12 +48,13 @@ export default function WitchlightChronik() {
   const [pcDossiers, upd, pcDossiersReady] = useSyncedList("td-s-pcdossiers", { order: "asc" });
   const [worldEntries, uwe, worldEntriesReady] = useSyncedList("td-s-worldentries");
   const [quickNotes, uqn, quickNotesReady] = useSyncedList("td-s-quicknotes");
+  const [playerNotes, upn, playerNotesReady] = useSyncedList("td-s-playernotes");
   const [haus, uh, hausReady] = useSyncedList("td-s-haus");
   const [moodboard, umb, moodboardReady] = useSyncedList("td-s-moodboard");
   const loaded = recapsReady && quotesReady
     && snippetsReady && npcsReady && pcsReady && reactionsReady
     && gmNotesReady && pcDossiersReady && worldEntriesReady
-    && quickNotesReady && hausReady && moodboardReady;
+    && quickNotesReady && playerNotesReady && hausReady && moodboardReady;
 
   const pin = () => { try { return localStorage.getItem("td-gm-pin") || DEFAULT_PIN; } catch { return DEFAULT_PIN; } };
   const tryPin = () => {
@@ -72,6 +76,7 @@ export default function WitchlightChronik() {
     { id: "npcs",       icon: "👥",  label: "NPCs" },
     { id: "pc",         icon: "🎭",  label: "Player Character's" },
     { id: "moodboard",  icon: "🖼",  label: "Moodboard" },
+    { id: "notizen",    icon: "📝", label: "Notizen" },
     ...(gmMode ? [{ id: "haus", icon: "🏡", label: "Haus" }] : []),
     ...(gmMode ? [{ id: "gmplan", icon: "🔐", label: "GM-Plan" }] : []),
   ];
@@ -181,6 +186,9 @@ export default function WitchlightChronik() {
       <div hidden={tab !== "moodboard"}>
         <MoodboardTab gmMode={gmMode} playerName={playerName} needName={needName} moodboard={moodboard} umb={umb} />
       </div>
+      <div hidden={tab !== "notizen"}>
+        <NotizenTab playerName={playerName} needName={needName} playerNotes={playerNotes} upn={upn} />
+      </div>
       <div hidden={tab !== "haus" || !gmMode}>
         <HausTab gmMode={gmMode} playerName={playerName} needName={needName} haus={haus} uh={uh} />
       </div>
@@ -189,8 +197,13 @@ export default function WitchlightChronik() {
           quickNotes={quickNotes} uqn={uqn} gmNotes={gmNotes} ugn={ugn} />
       </div>
 
+      {/* One bar at a time: the GM keeps theirs, everyone else gets the
+          foldable player version. */}
       <div hidden={!gmMode}>
         <SchnellerfassungBar quotes={quotes} uqt={uqt} quickNotes={quickNotes} uqn={uqn} />
+      </div>
+      <div hidden={gmMode}>
+        <SpielerBar playerName={playerName} needName={needName} quotes={quotes} uqt={uqt} playerNotes={playerNotes} upn={upn} />
       </div>
     </div>
   );
