@@ -10,6 +10,11 @@
   --cardshadow: 0 22px 44px -30px rgba(0,0,0,.9);
 }
 * { box-sizing: border-box; }
+/* Ohne diesen Reset scheint der 8px-Standardrand des Browsers als weißer
+   Rahmen um die App durch — inklusive Überscroll an den Rändern. */
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); }
+html, body, #root { min-height: 100%; }
 ::selection { background: rgba(229,52,42,.35); }
 ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-thumb { background: rgba(244,234,214,0.14); border-radius: 8px; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
