@@ -8,11 +8,16 @@ const norm = (s) => (s || "").trim().toLowerCase();
 // collection — they stay owned by the character and are projected into this tab,
 // so both views always show the same data. An NPC whose name already exists here
 // is merged into the existing card instead of showing up twice.
+//
+// On a character sheet, `description` answers "who is this person for *my*
+// character" — that is the relationship, and it belongs to that character, not
+// to the NPC. It is surfaced here as a relation; the NPC's own neutral
+// description lives in `npcDescription` so the two never overwrite each other.
 function projectPcNpcs(npcs, pcs) {
   const byName = new Map();
   npcs.forEach(n => { if (!byName.has(norm(n.name))) byName.set(norm(n.name), n); });
   const derived = [];
-  const links = new Map(); // npc id -> [{ pcId, pcName, description }]
+  const relations = new Map(); // npc id -> [{ pcId, pcName, entryId, text }]
   (pcs || []).forEach(pc => {
     (pc.npcs || []).forEach(pn => {
       if (!pn?.name) return;
@@ -21,7 +26,7 @@ function projectPcNpcs(npcs, pcs) {
         target = {
           ...pn,
           faction: pn.faction || "",
-          description: pn.description || "",
+          description: pn.npcDescription || "",
           imageUrl: pn.image || pn.imageUrl || "",
           status: pn.status || "unbekannt",
           location: pn.location || "unbekannt",
@@ -32,19 +37,20 @@ function projectPcNpcs(npcs, pcs) {
         derived.push(target);
         byName.set(norm(pn.name), target);
       }
-      links.set(target.id, [...(links.get(target.id) || []),
-        { pcId: pc.id, pcName: pc.name || pc.player || "Charakter", description: pn.description || "" }]);
+      relations.set(target.id, [...(relations.get(target.id) || []),
+        { pcId: pc.id, pcName: pc.name || pc.player || "Charakter", entryId: pn.id, text: pn.description || "" }]);
     });
   });
-  return { allNpcs: [...npcs, ...derived], pcLinks: links };
+  return { allNpcs: [...npcs, ...derived], pcRelations: relations };
 }
 
-// Fold an NPC-tab edit back into the shape a character sheet stores.
+// Fold an NPC-tab edit back into the shape a character sheet stores. `description`
+// stays untouched — that is the character's relationship, edited separately.
 const toEmbedded = (orig, next) => ({
   ...orig,
   name: next.name,
   image: next.imageUrl || "",
-  description: next.description || "",
+  npcDescription: next.description || "",
   faction: next.faction || "",
   status: next.status || "unbekannt",
   location: next.location || "unbekannt",
@@ -63,11 +69,14 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
   const [npcImpression, setNpcImpression] = useState({ npcId: null, text: "" });
   const [editingImpression, setEditingImpression] = useState(null);
   const [editingImpressionText, setEditingImpressionText] = useState("");
+  const [editingRelation, setEditingRelation] = useState(null); // { npcId, entryId }
+  const [relationText, setRelationText] = useState("");
+  const [newRelation, setNewRelation] = useState({ npcId: null, pcId: "", text: "" });
 
   // ── Ref for NPC detail scroll ──
   const npcDetailRef = useRef(null);
 
-  const { allNpcs, pcLinks } = useMemo(() => projectPcNpcs(npcs, pcs), [npcs, pcs]);
+  const { allNpcs, pcRelations } = useMemo(() => projectPcNpcs(npcs, pcs), [npcs, pcs]);
   const findNpc = (id) => allNpcs.find(n => n.id === id);
 
   // Auto-scroll to NPC detail when one is expanded
@@ -125,15 +134,42 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
     updateNpc(npcId, { impressions: (n.impressions || []).filter(imp => imp.id !== impId) });
   };
 
+  // A relation lives on the character's sheet, so every change writes there.
+  const patchPcNpcs = (pcId, fn) => upc?.(pcs.map(pc => pc.id !== pcId ? pc : { ...pc, npcs: fn(pc.npcs || []) }));
+
+  const saveRelation = (npcId, pcId, entryId) => {
+    if (!relationText.trim()) return;
+    patchPcNpcs(pcId, list => list.map(pn => pn.id !== entryId ? pn : { ...pn, description: relationText.trim() }));
+    setEditingRelation(null); setRelationText("");
+  };
+
+  const removeRelation = (npcId, pcId, entryId, pcName) => {
+    const n = findNpc(npcId);
+    if (!window.confirm(`Beziehung zu ${pcName} entfernen? ${n?.name || "Der NPC"} verschwindet damit auch aus diesem Steckbrief.`)) return;
+    patchPcNpcs(pcId, list => list.filter(pn => pn.id !== entryId));
+    if (editingRelation?.entryId === entryId) { setEditingRelation(null); setRelationText(""); }
+  };
+
+  // Adding a relation copies the NPC onto that character's sheet — same entry the
+  // player would have created there by hand, so both views stay in sync.
+  const addRelation = (npcId) => {
+    const n = findNpc(npcId);
+    if (!n || !newRelation.pcId || !newRelation.text.trim()) return;
+    patchPcNpcs(newRelation.pcId, list => [...list, {
+      id: makeId(), name: n.name, image: n.imageUrl || "", description: newRelation.text.trim(),
+    }]);
+    setNewRelation({ npcId: null, pcId: "", text: "" });
+  };
+
   const deleteNpc = (id) => {
     const target = findNpc(id);
     if (!target) return;
-    const links = pcLinks.get(id) || [];
+    const relations = pcRelations.get(id) || [];
     // A merged NPC also lives on a character sheet; deleting it here only drops
     // the shared entry, so say that instead of letting the card reappear
     // unexplained.
-    const msg = target.source !== "pc" && links.length > 0
-      ? `${target.name} steht auch im Steckbrief von ${links.map(l => l.pcName).join(", ")}. Aus der NPC-Liste löschen? Der Eintrag beim Charakter bleibt erhalten und wird weiter hier angezeigt.`
+    const msg = target.source !== "pc" && relations.length > 0
+      ? `${target.name} steht auch im Steckbrief von ${relations.map(r => r.pcName).join(", ")}. Aus der NPC-Liste löschen? Der Eintrag beim Charakter bleibt erhalten und wird weiter hier angezeigt.`
       : `${target.name} wirklich löschen?`;
     if (!window.confirm(msg)) return;
     if (target.source === "pc") {
@@ -238,7 +274,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
       {expandedNpc && (() => {
         const n = findNpc(expandedNpc);
         if (!n) return null;
-        const links = pcLinks.get(n.id) || [];
+        const links = pcRelations.get(n.id) || [];
         return (
           <div className="npc-detail" ref={npcDetailRef}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"0.5rem"}}>
@@ -271,18 +307,60 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                     placeholder="Was wissen die Spieler über diese Person..." />
                 </div>
             }
-            {links.length > 0 && (
-              <div className="npc-pc-links">
-                <p className="pc-card-sublabel" style={{marginBottom:"0.45rem"}}>Aus Charakter-Steckbriefen</p>
-                {links.map(l => (
-                  <div key={l.pcId} className="npc-pc-link">
+            {/* Relationships — the text each character wrote on their own sheet. */}
+            <div className="npc-rel-block">
+              <p className="pc-card-sublabel" style={{marginBottom:"0.45rem"}}>Beziehung zu den Charakteren</p>
+              {links.length === 0 && <p className="npc-rel-empty">Noch mit keinem Charakter verknüpft.</p>}
+              {links.map(l => {
+                const isEditing = editingRelation?.npcId === n.id && editingRelation?.entryId === l.entryId;
+                return (
+                  <div key={l.entryId} className="npc-rel-row">
                     <span className="npc-pc-chip">🎭 {l.pcName}</span>
-                    {l.description && norm(l.description) !== norm(n.description) &&
-                      <span className="npc-pc-link-desc">{l.description}</span>}
+                    {isEditing ? (
+                      <>
+                        <input className="npc-rel-input" value={relationText} autoFocus
+                          onChange={e => setRelationText(e.target.value)}
+                          onKeyDown={e => {
+                            if (e.key === "Enter") saveRelation(n.id, l.pcId, l.entryId);
+                            if (e.key === "Escape") { setEditingRelation(null); setRelationText(""); }
+                          }}
+                          placeholder={`Wer ist ${n.name} für ${l.pcName}?`} />
+                        <button className="btn-tiny btn-tiny-primary" onClick={() => saveRelation(n.id, l.pcId, l.entryId)} disabled={!relationText.trim()}>✓</button>
+                        <button className="btn-tiny btn-tiny-secondary" onClick={() => { setEditingRelation(null); setRelationText(""); }}>✕</button>
+                      </>
+                    ) : (
+                      <>
+                        <span className="npc-rel-text">{l.text || <em>noch nichts eingetragen</em>}</span>
+                        <button className="card-act-edit" title="Beziehung bearbeiten"
+                          onClick={() => { setEditingRelation({ npcId: n.id, entryId: l.entryId }); setRelationText(l.text || ""); }}>✎</button>
+                        <button className="btn-danger" title="Beziehung entfernen"
+                          onClick={() => removeRelation(n.id, l.pcId, l.entryId, l.pcName)}>✕</button>
+                      </>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+              {(() => {
+                const free = pcs.filter(pc => !links.some(l => l.pcId === pc.id));
+                if (free.length === 0) return null;
+                const active = newRelation.npcId === n.id;
+                return (
+                  <div className="npc-rel-row npc-rel-add">
+                    <select className="f-select npc-rel-select" value={active ? newRelation.pcId : ""}
+                      onChange={e => setNewRelation({ npcId: n.id, pcId: e.target.value, text: active ? newRelation.text : "" })}>
+                      <option value="">+ Charakter…</option>
+                      {free.map(pc => <option key={pc.id} value={pc.id}>{pc.name}</option>)}
+                    </select>
+                    <input className="npc-rel-input" value={active ? newRelation.text : ""}
+                      onChange={e => setNewRelation(r => ({ npcId: n.id, pcId: r.npcId === n.id ? r.pcId : "", text: e.target.value }))}
+                      onKeyDown={e => e.key === "Enter" && addRelation(n.id)}
+                      placeholder={`Wer ist ${n.name} für diesen Charakter?`} />
+                    <button className="btn-tiny btn-tiny-primary" onClick={() => addRelation(n.id)}
+                      disabled={!active || !newRelation.pcId || !newRelation.text.trim()}>✓</button>
+                  </div>
+                );
+              })()}
+            </div>
             {npcCircleId(n.location) !== "unbekannt" && (
               <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.45rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#ffb400",marginBottom:"0.4rem"}}>
                 {npcCircle(n.location).icon} {npcCircle(n.location).label}
@@ -351,7 +429,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
           const filtered = allNpcs.filter(n => {
             const locMatch = circleFilter === "all" || npcCircleId(n.location) === circleFilter;
             const q = npcSearch.toLowerCase().trim();
-            const linkedTo = (pcLinks.get(n.id) || []).map(l => l.pcName.toLowerCase()).join(" ");
+            const linkedTo = (pcRelations.get(n.id) || []).map(l => `${l.pcName} ${l.text}`.toLowerCase()).join(" ");
             const searchMatch = !q || n.name.toLowerCase().includes(q) || (n.faction||"").toLowerCase().includes(q) || linkedTo.includes(q);
             return locMatch && searchMatch;
           });
@@ -364,7 +442,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
           return (
             <div className="npc-grid">
               {sorted.map(n => {
-                const links = pcLinks.get(n.id) || [];
+                const links = pcRelations.get(n.id) || [];
                 return (
                   <div key={n.id} className={`npc-card ${expandedNpc === n.id ? "selected" : ""}`} onClick={() => setExpandedNpc(expandedNpc === n.id ? null : n.id)}>
                     <div className="npc-img">
@@ -378,7 +456,12 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                       {n.faction && <p className="npc-card-faction">{n.faction}</p>}
                       {links.length > 0 && (
                         <div className="npc-pc-chips">
-                          {links.map(l => <span key={l.pcId} className="npc-pc-chip">🎭 {l.pcName}</span>)}
+                          {links.map(l => (
+                            <span key={l.entryId} className="npc-pc-chip-row">
+                              <span className="npc-pc-chip">🎭 {l.pcName}</span>
+                              {l.text && <span className="npc-pc-chip-text">{l.text}</span>}
+                            </span>
+                          ))}
                         </div>
                       )}
                       {npcCircleId(n.location) !== "unbekannt" && (
