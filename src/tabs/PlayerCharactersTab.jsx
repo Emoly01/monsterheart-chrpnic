@@ -145,7 +145,7 @@ export default function PlayerCharactersTab({ gmMode, playerName, needName, pcs,
                 <div className="f-group"><label className="f-label">NPC-Name</label>
                   <input className="f-input" value={npcDraft.name} onChange={e => setNpcDraft(d => ({ ...d, name: e.target.value }))} placeholder="z.B. Mama Laveaux" /></div>
               </div>
-              <div className="f-group"><label className="f-label">Beschreibung</label>
+              <div className="f-group"><label className="f-label">Beziehung zu deinem Charakter</label>
                 <textarea className="f-input" rows={2} value={npcDraft.description} onChange={e => setNpcDraft(d => ({ ...d, description: e.target.value }))}
                   placeholder="Wer ist diese Person für deinen Charakter? Beziehung, Rolle, Wichtiges..." style={{ resize: "vertical", fontFamily: "'Spectral', serif" }} /></div>
               <div className="f-actions">
