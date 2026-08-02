@@ -222,8 +222,8 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
           {/* GM notes stay in the form state while a player edits, so they are
               never dropped — only the GM gets to see and change them. */}
           {gmMode && (
-            <div className="f-group"><label className="f-label">GM-Notizen (privat)</label>
-              <input className="f-input" value={npcForm.notes} onChange={e => setNpcForm(f=>({...f,notes:e.target.value}))} placeholder="Was niemand wissen soll..." /></div>
+            <div className="f-group"><label className="f-label">🔐 Nur für den SL</label>
+              <textarea className="f-input" rows={3} value={npcForm.notes} onChange={e => setNpcForm(f=>({...f,notes:e.target.value}))} placeholder="Was niemand am Tisch wissen soll..." /></div>
           )}
           <div className="f-actions">
             <button className="btn-primary" onClick={saveNpc} disabled={!npcForm.name.trim()}>Speichern</button>
@@ -366,7 +366,20 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                 {npcCircle(n.location).icon} {npcCircle(n.location).label}
               </p>
             )}
-            {gmMode && n.notes && <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.5rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#ffb400",marginBottom:"0.3rem",marginTop:"0.5rem"}}>GM-Notiz: <span style={{fontFamily:"'Spectral', serif",fontStyle:"italic",fontSize:"0.8rem",letterSpacing:0,textTransform:"none",color:"#9aa89c"}}>{n.notes}</span></p>}
+            {/* SL-Bereich: nur im GM-Modus sichtbar und direkt hier beschreibbar. */}
+            {gmMode && (
+              <div className="npc-gm-block">
+                <p className="npc-gm-title">🔐 Nur für den SL</p>
+                <textarea key={`gm-${n.id}`} className="npc-gm-input" rows={3}
+                  defaultValue={n.notes || ""}
+                  onBlur={e => {
+                    const updated = e.target.value.trim();
+                    if (updated !== (n.notes || "").trim()) updateNpc(n.id, { notes: updated });
+                  }}
+                  placeholder="Was niemand am Tisch wissen soll — Geheimnisse, Absichten, was diese Person wirklich will…" />
+                <p className="npc-gm-hint">Wird gespeichert, sobald du das Feld verlässt.</p>
+              </div>
+            )}
             <div className="divider" />
             <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.5rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"#9aa89c",marginBottom:"0.5rem"}}>Spieler-Eindrücke</p>
             {(n.impressions||[]).length > 0 && (
@@ -452,6 +465,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
                       <div style={{display:"flex",alignItems:"center",gap:"0.3rem",marginBottom:"0.1rem"}}>
                         <span className="npc-status-dot" style={{background:npcColor(n.status)}} />
                         <p className="npc-card-name">{n.name}</p>
+                        {gmMode && n.notes && <span className="npc-card-lock" title="SL-Notizen vorhanden">🔐</span>}
                       </div>
                       {n.faction && <p className="npc-card-faction">{n.faction}</p>}
                       {links.length > 0 && (

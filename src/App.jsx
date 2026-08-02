@@ -138,8 +138,6 @@ export default function TrinidadDiaries() {
                   <path d="M4 30 L30 4" stroke="#fbf6ec" strokeWidth="10" />
                   <path d="M4 30 L30 4" stroke="#12100e" strokeWidth="6" />
                 </g>
-                <circle cx="20" cy="20" r="13" fill="none" stroke="rgba(251,246,236,.35)" strokeWidth="1" />
-                <circle cx="20" cy="20" r="8" fill="none" stroke="rgba(251,246,236,.22)" strokeWidth="1" />
               </svg>
             </div>
             <div>
