@@ -1,8 +1,32 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { NPC_STATUSES, NPC_CIRCLES, NPC_SORT_OPTIONS, sortNpcs, npcColor, npcCircle, npcCircleId, makeId } from "../constants.js";
 
-const blankForm = () => ({ name: "", faction: "", description: "", imageUrl: "", status: "lebendig", location: "unbekannt", notes: "" });
+const blankForm = () => ({ name: "", faction: "", description: "", imageUrl: "", status: "lebendig", location: "unbekannt", notes: "", createdBy: "" });
 const norm = (s) => (s || "").trim().toLowerCase();
+const playerOf = (pc) => (pc?.player || pc?.name || "").trim();
+
+// The grid is grouped by who brought an NPC into the game: the player whose
+// sheet it lives on, or who added it here. Everything nobody claimed is the
+// GM's world and lands under "NPCs". Players come in sheet order, NPCs last.
+function groupByPlayer(list, pcs) {
+  const groups = new Map();
+  const ensure = (key, label) => {
+    if (!groups.has(key)) groups.set(key, { key, label, chars: [], npcs: [] });
+    return groups.get(key);
+  };
+  (pcs || []).forEach(pc => {
+    const label = playerOf(pc);
+    if (!label) return;
+    const g = ensure(norm(label), label);
+    if (pc.name && !g.chars.includes(pc.name)) g.chars.push(pc.name);
+  });
+  const world = { key: "__npc", label: "NPCs", chars: [], npcs: [], world: true };
+  list.forEach(n => {
+    const owner = n.source === "pc" ? playerOf((pcs || []).find(pc => pc.id === n.pcId)) : (n.createdBy || "").trim();
+    (owner ? ensure(norm(owner), owner) : world).npcs.push(n);
+  });
+  return [...groups.values(), world].filter(g => g.npcs.length > 0);
+}
 
 // NPCs a player adds on their character sheet are not copied into the NPC
 // collection — they stay owned by the character and are projected into this tab,
@@ -72,6 +96,10 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
   const [editingRelation, setEditingRelation] = useState(null); // { npcId, entryId }
   const [relationText, setRelationText] = useState("");
   const [newRelation, setNewRelation] = useState({ npcId: null, pcId: "", text: "" });
+
+  // A player adding an NPC here owns it by default, just like one added on
+  // their sheet; the GM's additions belong to the world.
+  const newNpcForm = () => ({ ...blankForm(), createdBy: gmMode ? "" : (playerName || "") });
 
   // ── Ref for NPC detail scroll ──
   const npcDetailRef = useRef(null);
@@ -189,7 +217,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
           <h1 className="section-title">Gesichter</h1>
           <p className="section-sub">Wer euch das Leben schwer macht — Familie, Lehrer:innen, Flammen und Feinde.</p>
         </div>
-        <button className="btn-add" onClick={() => { setShowNpcForm(v => !v); setEditingNpc(null); setNpcForm(blankForm()); }}>+ NPC hinzufügen</button>
+        <button className="btn-add" onClick={() => { setShowNpcForm(v => !v); setEditingNpc(null); setNpcForm(newNpcForm()); }}>+ NPC hinzufügen</button>
       </div>
       {showNpcForm && (
         <div className="form-panel">
@@ -221,6 +249,21 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
           </div>
           {/* GM notes stay in the form state while a player edits, so they are
               never dropped — only the GM gets to see and change them. */}
+          {/* NPCs from a character sheet always belong to that sheet's player;
+              only shared ones can be reassigned (or handed back to the world). */}
+          {!(editingNpc && findNpc(editingNpc)?.source === "pc") && (() => {
+            const players = [...new Set([...pcs.map(playerOf), npcForm.createdBy.trim()].filter(Boolean))];
+            if (players.length === 0) return null;
+            return (
+              <div className="f-group"><label className="f-label">Gehört zu</label>
+                <select className="f-select" value={npcForm.createdBy}
+                  onChange={e => setNpcForm(f => ({ ...f, createdBy: e.target.value }))}>
+                  <option value="">Niemandem — NPC</option>
+                  {players.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+            );
+          })()}
           {gmMode && (
             <div className="f-group"><label className="f-label">GM-Notizen (privat)</label>
               <input className="f-input" value={npcForm.notes} onChange={e => setNpcForm(f=>({...f,notes:e.target.value}))} placeholder="Was niemand wissen soll..." /></div>
@@ -257,7 +300,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
             <span className="npc-search-icon">🔍</span>
             <input className="npc-search-input" value={npcSearch}
               onChange={e => setNpcSearch(e.target.value)}
-              placeholder="Nach Name, Rolle oder Charakter suchen..." />
+              placeholder="Nach Name, Rolle, Charakter oder Spieler suchen..." />
           </div>
           <div className="npc-sort-wrap">
             {NPC_SORT_OPTIONS.map(s => (
@@ -284,7 +327,7 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
               </div>
               <div style={{display:"flex",gap:"0.4rem",alignItems:"center"}}>
                 <span className="tag" style={{color:npcColor(n.status),borderColor:npcColor(n.status)}}>{NPC_STATUSES.find(s=>s.id===n.status)?.label}</span>
-                <button className="btn-secondary" style={{padding:"0.2rem 0.5rem",fontSize:"0.45rem"}} onClick={() => { setNpcForm({name:n.name,faction:n.faction||"",description:n.description||"",imageUrl:n.imageUrl||"",status:n.status||"unbekannt",location:n.location||"unbekannt",notes:n.notes||""}); setEditingNpc(n.id); setShowNpcForm(true); setExpandedNpc(null); }}>✎ Bearbeiten</button>
+                <button className="btn-secondary" style={{padding:"0.2rem 0.5rem",fontSize:"0.45rem"}} onClick={() => { setNpcForm({name:n.name,faction:n.faction||"",description:n.description||"",imageUrl:n.imageUrl||"",status:n.status||"unbekannt",location:n.location||"unbekannt",notes:n.notes||"",createdBy:n.createdBy||""}); setEditingNpc(n.id); setShowNpcForm(true); setExpandedNpc(null); }}>✎ Bearbeiten</button>
                 <button className="btn-danger" onClick={() => setExpandedNpc(null)}>✕</button>
               </div>
             </div>
@@ -430,7 +473,8 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
             const locMatch = circleFilter === "all" || npcCircleId(n.location) === circleFilter;
             const q = npcSearch.toLowerCase().trim();
             const linkedTo = (pcRelations.get(n.id) || []).map(l => `${l.pcName} ${l.text}`.toLowerCase()).join(" ");
-            const searchMatch = !q || n.name.toLowerCase().includes(q) || (n.faction||"").toLowerCase().includes(q) || linkedTo.includes(q);
+            const owner = n.source === "pc" ? playerOf(pcs.find(pc => pc.id === n.pcId)) : (n.createdBy || "");
+            const searchMatch = !q || n.name.toLowerCase().includes(q) || (n.faction||"").toLowerCase().includes(q) || linkedTo.includes(q) || owner.toLowerCase().includes(q);
             return locMatch && searchMatch;
           });
           const sorted = sortNpcs(filtered, npcSort);
@@ -439,40 +483,51 @@ export default function NpcsTab({ gmMode, playerName, npcs, un, pcs = [], upc })
               Keine NPCs gefunden.<br /><span style={{fontSize:"0.85rem"}}>Versuch eine andere Suche oder einen anderen Ort. ✦</span>
             </div>
           );
-          return (
-            <div className="npc-grid">
-              {sorted.map(n => {
-                const links = pcRelations.get(n.id) || [];
-                return (
-                  <div key={n.id} className={`npc-card ${expandedNpc === n.id ? "selected" : ""}`} onClick={() => setExpandedNpc(expandedNpc === n.id ? null : n.id)}>
-                    <div className="npc-img">
-                      {n.imageUrl ? <img src={n.imageUrl} alt={n.name} onError={e => { e.target.style.display="none"; e.target.parentNode.innerHTML="👤"; }} /> : "👤"}
-                    </div>
-                    <div className="npc-card-body">
-                      <div style={{display:"flex",alignItems:"center",gap:"0.3rem",marginBottom:"0.1rem"}}>
-                        <span className="npc-status-dot" style={{background:npcColor(n.status)}} />
-                        <p className="npc-card-name">{n.name}</p>
-                      </div>
-                      {n.faction && <p className="npc-card-faction">{n.faction}</p>}
-                      {links.length > 0 && (
-                        <div className="npc-pc-chips">
-                          {links.map(l => (
-                            <span key={l.entryId} className="npc-pc-chip-row">
-                              <span className="npc-pc-chip">🎭 {l.pcName}</span>
-                              {l.text && <span className="npc-pc-chip-text">{l.text}</span>}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {npcCircleId(n.location) !== "unbekannt" && (
-                        <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.38rem",letterSpacing:"0.08em",textTransform:"uppercase",color:"#ffb400",marginTop:"0.2rem"}}>
-                          {npcCircle(n.location).icon} {npcCircle(n.location).label}
-                        </p>
-                      )}
-                    </div>
+          const renderCard = (n) => {
+            const links = pcRelations.get(n.id) || [];
+            return (
+              <div key={n.id} className={`npc-card ${expandedNpc === n.id ? "selected" : ""}`} onClick={() => setExpandedNpc(expandedNpc === n.id ? null : n.id)}>
+                <div className="npc-img">
+                  {n.imageUrl ? <img src={n.imageUrl} alt={n.name} onError={e => { e.target.style.display="none"; e.target.parentNode.innerHTML="👤"; }} /> : "👤"}
+                </div>
+                <div className="npc-card-body">
+                  <div style={{display:"flex",alignItems:"center",gap:"0.3rem",marginBottom:"0.1rem"}}>
+                    <span className="npc-status-dot" style={{background:npcColor(n.status)}} />
+                    <p className="npc-card-name">{n.name}</p>
                   </div>
-                );
-              })}
+                  {n.faction && <p className="npc-card-faction">{n.faction}</p>}
+                  {links.length > 0 && (
+                    <div className="npc-pc-chips">
+                      {links.map(l => (
+                        <span key={l.entryId} className="npc-pc-chip-row">
+                          <span className="npc-pc-chip">🎭 {l.pcName}</span>
+                          {l.text && <span className="npc-pc-chip-text">{l.text}</span>}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {npcCircleId(n.location) !== "unbekannt" && (
+                    <p style={{fontFamily:"'Archivo', sans-serif",fontSize:"0.38rem",letterSpacing:"0.08em",textTransform:"uppercase",color:"#ffb400",marginTop:"0.2rem"}}>
+                      {npcCircle(n.location).icon} {npcCircle(n.location).label}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          };
+          return (
+            <div className="npc-groups">
+              {groupByPlayer(sorted, pcs).map(g => (
+                <section key={g.key} className={`npc-group ${g.world ? "npc-group-world" : ""}`}>
+                  <div className="npc-group-hdr">
+                    <span className="npc-group-icon">{g.world ? "👥" : "◆"}</span>
+                    <h2 className="npc-group-title">{g.label}</h2>
+                    {g.chars.length > 0 && <span className="npc-group-chars">🎭 {g.chars.join(", ")}</span>}
+                    <span className="npc-group-count">{g.npcs.length}</span>
+                  </div>
+                  <div className="npc-grid">{g.npcs.map(renderCard)}</div>
+                </section>
+              ))}
             </div>
           );
         })()

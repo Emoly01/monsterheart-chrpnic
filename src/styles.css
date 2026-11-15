@@ -137,6 +137,13 @@ html, body, #root { min-height: 100%; }
 
 /* ── Grids of cards ── */
 .npc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+.npc-groups { display: flex; flex-direction: column; gap: 34px; }
+.npc-group-hdr { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; padding-bottom: 10px; margin-bottom: 16px; border-bottom: 1px solid var(--line); }
+.npc-group-icon { color: var(--gold); font-size: 0.8rem; }
+.npc-group-world .npc-group-icon { color: var(--muted); }
+.npc-group-title { font-family: var(--display); font-weight: 400; font-size: 1.35rem; line-height: 1.1; color: var(--ink); margin: 0; }
+.npc-group-chars { font-family: var(--label); font-size: 0.55rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); }
+.npc-group-count { margin-left: auto; font-family: var(--label); font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); }
 .quotes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
 
