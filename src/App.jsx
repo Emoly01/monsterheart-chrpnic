@@ -71,10 +71,10 @@ export default function TrinidadDiaries() {
 
   const tabs = [
     { id: "chronik",    icon: "📖", label: "Diary" },
+    { id: "pc",         icon: "🎭",  label: "Player Character's" },
+    { id: "npcs",       icon: "👥",  label: "NPCs" },
     { id: "zitate",     icon: "❝",  label: "Zitate" },
     { id: "geschichten",icon: "🌙",  label: "Snippets" },
-    { id: "npcs",       icon: "👥",  label: "NPCs" },
-    { id: "pc",         icon: "🎭",  label: "Player Character's" },
     { id: "moodboard",  icon: "🖼",  label: "Moodboard" },
     { id: "notizen",    icon: "📝", label: "Notizen" },
     ...(gmMode ? [{ id: "haus", icon: "🏡", label: "Haus" }] : []),
